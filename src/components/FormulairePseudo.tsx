@@ -40,13 +40,13 @@ export default function FormulairePseudo({ surCreation, libelle }: {
         maxLength={24}
         autoComplete="off"
         autoCapitalize="words"
-        className="w-full rounded-2xl border border-white/15 bg-black/30 px-5 py-4 text-lg text-white placeholder-white/40 outline-none focus:border-or"
+        className="w-full rounded-xl border-2 border-or/30 bg-black/30 px-5 py-3.5 text-lg text-creme placeholder-creme/35 outline-none focus:border-or"
       />
       {erreur && <p className="px-1 text-sm text-rose-300">{erreur}</p>}
       <button type="submit" className="bouton-or" disabled={envoi || pseudo.trim().length < 2}>
         {envoi ? 'Une seconde…' : libelle}
       </button>
-      <p className="px-1 text-xs text-white/40">
+      <p className="px-1 text-xs text-creme/40">
         Ton pseudo reste sur ton téléphone. Si tu vides ton navigateur, tu repars de zéro.
       </p>
     </form>

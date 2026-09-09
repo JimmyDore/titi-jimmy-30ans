@@ -22,14 +22,14 @@ export default function Classements() {
     <div className="ecran">
       <Entete titre="Les classements" />
 
-      <div className="flex shrink-0 gap-2 rounded-2xl bg-white/5 p-1">
-        <Onglet actif={onglet === 'quizz'} onClick={() => setOnglet('quizz')}>🧠 Quizz</Onglet>
-        <Onglet actif={onglet === 'roue'} onClick={() => setOnglet('roue')}>🎡 Roue</Onglet>
+      <div className="flex shrink-0 gap-1.5 rounded-xl border-2 border-or/20 bg-black/25 p-1">
+        <Onglet actif={onglet === 'quizz'} onClick={() => setOnglet('quizz')}><span className="mr-2">🧠</span>Quizz</Onglet>
+        <Onglet actif={onglet === 'roue'} onClick={() => setOnglet('roue')}><span className="mr-2">🎡</span>Roue</Onglet>
       </div>
 
       {/* Seule la liste défile, dans son cadre : l'écran lui-même ne bouge pas. */}
       <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-        {!donnees && <p className="text-center text-white/50">Chargement…</p>}
+        {!donnees && <p className="text-center text-creme/50">Chargement…</p>}
 
         {donnees && onglet === 'quizz' && (
           donnees.quizz.length === 0
@@ -46,7 +46,7 @@ export default function Classements() {
           donnees.roue.length === 0
             ? <Vide texte="Personne n'a encore tourné. Lâches." />
             : <>
-                <p className="mb-3 text-xs text-white/40">
+                <p className="mb-3 text-xs text-creme/40">
                   Classé sur les défis <strong>relevés</strong>, pas sur le nombre de tours.
                 </p>
                 <ol className="flex flex-col gap-2">
@@ -67,7 +67,10 @@ function Onglet({ actif, onClick, children }: { actif: boolean; onClick: () => v
   return (
     <button
       onClick={onClick}
-      className={`flex-1 rounded-xl px-4 py-2 font-semibold transition ${actif ? 'bg-or text-nuit' : 'text-white/60'}`}
+      style={actif ? { fontFamily: 'var(--font-titre)' } : undefined}
+      className={`flex-1 rounded-lg px-4 py-2 transition ${
+        actif ? 'bg-or text-velours shadow-[0_3px_0_var(--color-or-sombre)]' : 'font-semibold text-creme/55'
+      }`}
     >
       {children}
     </button>
@@ -80,19 +83,23 @@ function Ligne({ rang, pseudo, droite, sous, moi }: {
   const medaille = ['🥇', '🥈', '🥉'][rang - 1]
   const cest_moi = pseudo === moi
   return (
-    <li className={`flex items-center gap-3 rounded-2xl border px-4 py-3 ${
-      cest_moi ? 'border-or/60 bg-or/10' : 'border-white/10 bg-white/5'
+    <li className={`flex items-center gap-3 rounded-xl border-2 px-3 py-2.5 ${
+      cest_moi ? 'border-or bg-or/15' : 'border-or/15 bg-carte'
     }`}>
-      <span className="w-8 text-center text-lg">{medaille ?? rang}</span>
-      <span className="flex-1">
-        <span className="block font-semibold">{pseudo}{cest_moi && ' (toi)'}</span>
-        {sous && <span className="block text-xs text-white/40">{sous}</span>}
+      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
+        medaille ? 'text-2xl' : 'border-2 border-or/25 bg-black/25 text-sm text-creme/60'
+      }`}>
+        {medaille ?? rang}
       </span>
-      <span className="font-bold text-or">{droite}</span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate font-semibold">{pseudo}{cest_moi && ' (toi)'}</span>
+        {sous && <span className="block text-xs text-creme/40">{sous}</span>}
+      </span>
+      <span className="shrink-0 text-lg text-or" style={{ fontFamily: 'var(--font-titre)' }}>{droite}</span>
     </li>
   )
 }
 
 function Vide({ texte }: { texte: string }) {
-  return <p className="carte text-center text-white/60">{texte}</p>
+  return <p className="carte text-center text-creme/60">{texte}</p>
 }

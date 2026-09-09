@@ -1,24 +1,37 @@
 @import "tailwindcss";
+@import "@fontsource/alfa-slab-one/latin-400.css";
+@import "@fontsource/alfa-slab-one/latin-ext-400.css";
 
+/* La photo du site est un faux mariage royal, et le jeu consiste à croquer des
+   piments. Tout le design tient dans cet écart : le slab gras victorien est
+   l'ancêtre commun de l'affiche de proclamation royale et du panneau de
+   forain. On imprime, on ne fait pas briller — ombres portées dures, filets
+   or, aucun halo. */
 @theme {
-  --color-nuit: #12091c;
-  --color-nuit-clair: #1e0f2e;
-  --color-carte: #251440;
-  --color-or: #f5c451;
-  --color-or-sombre: #b8862b;
-  --color-magenta: #c026d3;
-  --font-titre: "Georgia", "Times New Roman", serif;
+  /* Couleurs relevées sur la photo elle-même : la tunique, les galons,
+     l'écharpe, la dentelle. Le fond est le velours du rideau de scène. */
+  --color-velours: #1b0912;
+  --color-carte: #3a1526;
+  --color-rouge: #da1f2d;
+  --color-rouge-sombre: #8e1220;
+  --color-or: #ffc53d;
+  --color-or-sombre: #b8801a;
+  --color-bleu: #2a9df4;
+  --color-bleu-sombre: #17699e;
+  --color-creme: #fff3e0;
+  --font-titre: "Alfa Slab One", Georgia, serif;
 }
 
 html, body, #root { height: 100%; }
 
 body {
   background:
-    radial-gradient(circle at 20% 0%, #3b1259 0%, transparent 55%),
-    radial-gradient(circle at 90% 100%, #4a1140 0%, transparent 50%),
-    var(--color-nuit);
+    /* Un projecteur de scène en haut, le rideau qui s'assombrit en bas. */
+    radial-gradient(ellipse 120% 60% at 50% -10%, #6d1030 0%, transparent 60%),
+    radial-gradient(ellipse 90% 50% at 50% 115%, #12060d 0%, transparent 70%),
+    var(--color-velours);
   background-attachment: fixed;
-  color: #f4ecff;
+  color: var(--color-creme);
   /* Le site se joue debout, une bière dans l'autre main : rien ne doit
      déclencher un zoom accidentel ni un tirage sélectionné par erreur. */
   -webkit-text-size-adjust: 100%;
@@ -43,25 +56,69 @@ body {
   padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
 }
 
+/* Les boutons sont des objets : ils ont une tranche, et ils s'enfoncent sous le
+   doigt. Sur un téléphone c'est le seul retour tactile qu'on puisse offrir. */
 @utility bouton-or {
-  @apply w-full rounded-2xl bg-gradient-to-b from-or to-or-sombre px-5 py-3.5 text-center text-lg font-bold text-nuit shadow-lg transition active:scale-[0.98] disabled:opacity-40;
+  @apply w-full rounded-xl bg-or px-5 py-3 text-center text-lg text-velours;
+  font-family: var(--font-titre);
+  box-shadow: 0 4px 0 var(--color-or-sombre);
+  transition: transform 80ms, box-shadow 80ms;
+  &:active:not(:disabled) {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 var(--color-or-sombre);
+  }
+  &:disabled { @apply opacity-40; }
+}
+
+@utility bouton-rouge {
+  @apply w-full rounded-xl bg-rouge px-5 py-3 text-center text-lg text-creme;
+  font-family: var(--font-titre);
+  box-shadow: 0 4px 0 var(--color-rouge-sombre);
+  transition: transform 80ms, box-shadow 80ms;
+  &:active:not(:disabled) {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 var(--color-rouge-sombre);
+  }
+  &:disabled { @apply opacity-40; }
 }
 
 @utility bouton-fantome {
-  @apply w-full rounded-2xl border border-white/20 bg-white/5 px-5 py-3.5 text-center text-lg font-semibold text-white/90 transition active:scale-[0.98] disabled:opacity-40;
+  @apply w-full rounded-xl border-2 border-or/35 bg-white/5 px-5 py-3 text-center text-lg font-semibold text-creme/90;
+  transition: transform 80ms, background-color 80ms;
+  &:active:not(:disabled) { transform: translateY(2px); @apply bg-white/10; }
+  &:disabled { @apply opacity-40; }
 }
 
+/* Une carte est un carton imprimé : filet or, ombre dure, pas de flou. */
 @utility carte {
-  @apply rounded-3xl border border-white/10 bg-carte/70 p-5 shadow-xl backdrop-blur;
+  @apply rounded-2xl border-2 border-or/25 bg-carte p-5;
+  box-shadow: 0 4px 0 rgb(0 0 0 / 0.4);
 }
 
 @utility rond {
-  @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80;
+  @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-or/40 bg-carte text-creme;
 }
 
+/* Le titre courant : la police, sans le tapage. */
 @utility titre {
   font-family: var(--font-titre);
-  @apply font-bold tracking-tight text-or;
+  @apply tracking-tight text-or;
+}
+
+/* L'enseigne : le traitement d'affiche, or sur ombre rouge décalée, réservé aux
+   deux ou trois moments qui doivent crier (le nom, un verdict, un score). */
+@utility enseigne {
+  font-family: var(--font-titre);
+  @apply text-or;
+  text-shadow: 3px 3px 0 var(--color-rouge-sombre);
+  line-height: 0.95;
+}
+
+/* Le bandeau de cérémonie posé en travers du portrait. */
+@utility ruban {
+  @apply bg-rouge px-5 py-1.5 text-creme;
+  font-family: var(--font-titre);
+  box-shadow: 0 3px 0 var(--color-rouge-sombre);
 }
 
 @keyframes monter {
@@ -77,6 +134,21 @@ body {
 @keyframes fondu {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* Le verdict tombe comme un tampon sur un parchemin. */
+@keyframes tampon {
+  0% { opacity: 0; transform: scale(2.4) rotate(-16deg); }
+  55% { opacity: 1; transform: scale(0.88) rotate(-5deg); }
+  100% { opacity: 1; transform: scale(1) rotate(-5deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @media print {

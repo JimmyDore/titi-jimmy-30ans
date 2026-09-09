@@ -8,18 +8,21 @@ export default function Accueil({ joueur, surCreation }: {
 }) {
   return (
     <div className="ecran">
-      <header className="shrink-0 text-center">
-        <p className="text-xs uppercase tracking-[0.2em] text-or/70">Les 30 ans de</p>
-        <h1 className="titre text-4xl leading-tight">Titi &amp; Jimmy</h1>
-      </header>
+      <h1 className="enseigne shrink-0 pt-1 text-center text-[2.7rem]">Titi &amp; Jimmy</h1>
 
       {/* La photo est l'élastique de l'écran : elle prend ce qui reste après les
-          boutons, jamais l'inverse. */}
-      <img
-        src="/mariage.jpg"
-        alt="Titi et Jimmy en tenue de mariage royal"
-        className="my-4 min-h-0 w-full flex-1 rounded-3xl border border-or/30 object-cover shadow-2xl"
-      />
+          boutons, jamais l'inverse. Le cadre penché et le ruban en travers la
+          traitent pour ce qu'elle est — un portrait officiel entièrement faux. */}
+      <div className="relative my-4 min-h-0 flex-1 -rotate-[1.5deg]">
+        <img
+          src="/mariage.jpg"
+          alt="Titi et Jimmy en tenue de mariage royal"
+          className="h-full w-full rounded-lg border-4 border-or object-cover shadow-[0_6px_0_rgb(0,0,0,0.45)]"
+        />
+        <span className="ruban absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap text-sm">
+          30 ans de règne
+        </span>
+      </div>
 
       {joueur ? (
         <nav className="flex shrink-0 flex-col gap-2.5">
@@ -28,14 +31,14 @@ export default function Accueil({ joueur, surCreation }: {
           <Tuile emoji="🏆" titre="Les classements" texte="Qui gagne, qui se ridiculise." onClick={() => naviguer('/classements')} />
         </nav>
       ) : (
-        <div className="shrink-0 rounded-3xl border border-white/10 bg-carte/70 p-4 shadow-xl backdrop-blur">
-          <p className="mb-3 text-center text-white/80">Choisis un pseudo pour commencer.</p>
+        <div className="carte shrink-0 p-4">
+          <p className="mb-3 text-center text-creme/80">Choisis un pseudo pour commencer.</p>
           <FormulairePseudo libelle="Entrer dans la fête" surCreation={surCreation} />
         </div>
       )}
 
       <footer className="shrink-0 pt-2 text-center">
-        <button onClick={() => naviguer('/admin')} className="text-xs text-white/25">
+        <button onClick={() => naviguer('/admin')} className="text-xs text-creme/25">
           admin
         </button>
       </footer>
@@ -49,12 +52,14 @@ function Tuile({ emoji, titre, texte, onClick }: {
   return (
     <button
       onClick={onClick}
-      className="flex items-center gap-3.5 rounded-2xl border border-white/10 bg-carte/70 p-3.5 text-left shadow-lg backdrop-blur transition active:scale-[0.98]"
+      className="flex items-center gap-3 rounded-xl border-2 border-or/25 bg-carte p-3 text-left shadow-[0_4px_0_rgb(0,0,0,0.4)] transition active:translate-y-1 active:shadow-none"
     >
-      <span className="text-3xl">{emoji}</span>
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-or/40 bg-or/15 text-2xl">
+        {emoji}
+      </span>
       <span>
-        <span className="block font-bold text-or">{titre}</span>
-        <span className="block text-xs text-white/60">{texte}</span>
+        <span className="titre block text-lg">{titre}</span>
+        <span className="block text-xs text-creme/55">{texte}</span>
       </span>
     </button>
   )

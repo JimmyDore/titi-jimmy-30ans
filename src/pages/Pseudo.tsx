@@ -9,17 +9,21 @@ export default function Pseudo({ destination, surCreation }: {
   const jeu = destination === '/roue' ? 'la roue' : 'le quizz'
   return (
     <div className="ecran">
-      <div className="shrink-0 text-center">
-        <p className="text-xs uppercase tracking-[0.2em] text-or/70">Les 30 ans de</p>
-        <h1 className="titre text-4xl">Titi &amp; Jimmy</h1>
+      <h1 className="enseigne shrink-0 pt-1 text-center text-[2.7rem]">Titi &amp; Jimmy</h1>
+
+      <div className="relative my-4 min-h-0 flex-1 -rotate-[1.5deg]">
+        <img
+          src="/mariage.jpg"
+          alt="Titi et Jimmy en tenue de mariage royal"
+          className="h-full w-full rounded-lg border-4 border-or object-cover shadow-[0_6px_0_rgb(0,0,0,0.45)]"
+        />
+        <span className="ruban absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap text-sm">
+          30 ans de règne
+        </span>
       </div>
-      <img
-        src="/mariage.jpg"
-        alt="Titi et Jimmy en tenue de mariage royal"
-        className="my-4 min-h-0 w-full flex-1 rounded-3xl border border-or/30 object-cover shadow-2xl"
-      />
-      <div className="shrink-0 rounded-3xl border border-white/10 bg-carte/70 p-4 shadow-xl backdrop-blur">
-        <p className="mb-3 text-center text-white/80">
+
+      <div className="carte shrink-0 p-4">
+        <p className="mb-3 text-center text-creme/80">
           Un pseudo et tu enchaînes sur {jeu}.
         </p>
         <FormulairePseudo

@@ -45,7 +45,7 @@ function Feuille({ emoji, titre, soustitre, url }: {
     >
       <p className="text-sm uppercase tracking-[0.3em] text-gray-500">Les 30 ans de Titi &amp; Jimmy</p>
       <p style={{ fontSize: '90px', lineHeight: 1 }}>{emoji}</p>
-      <h1 className="text-5xl font-bold">{titre}</h1>
+      <h1 className="text-5xl" style={{ fontFamily: 'var(--font-titre)' }}>{titre}</h1>
       <p className="text-xl text-gray-700">{soustitre}</p>
       {/* Le SVG est en 100% × 100% : sans conteneur dimensionné, il s'effondre
           à zéro et la feuille part à l'imprimante sans son QR code. */}

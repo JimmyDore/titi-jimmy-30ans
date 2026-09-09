@@ -39,7 +39,7 @@ export default function App() {
       return (
         <div className="ecran items-center justify-center gap-6 text-center">
           <p className="text-6xl">🤷</p>
-          <p className="text-white/70">Cette page n'existe pas. Tu as scanné quoi, exactement&nbsp;?</p>
+          <p className="text-creme/70">Cette page n'existe pas. Tu as scanné quoi, exactement&nbsp;?</p>
           <button className="bouton-or" onClick={() => naviguer('/')}>Retour à l'accueil</button>
         </div>
       )

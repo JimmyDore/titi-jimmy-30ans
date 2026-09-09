@@ -60,7 +60,7 @@ export default function Roue({ joueur }: { joueur: Joueur }) {
           </button>
         }
       />
-      <p className="shrink-0 text-center text-xs text-white/40">
+      <p className="shrink-0 text-center text-xs text-creme/40">
         {joueur.pseudo} — autant de tours que tu veux. C'est toi qui vois.
       </p>
 
@@ -79,12 +79,25 @@ export default function Roue({ joueur }: { joueur: Joueur }) {
           {segments.map((s, i) => (
             <Quartier key={s.id} segment={s} index={i} nombre={segments.length} />
           ))}
-          <circle r="20" fill="#12091c" stroke="#f5c451" strokeWidth="3" />
+          {/* La jante et ses ampoules tournent avec la roue : sans un repère qui
+              défile, un disque de couleurs qui pivote ne se lit pas. */}
+          <circle r="104" fill="none" stroke="#b8801a" strokeWidth="8" />
+          {segments.map((_, i) => {
+            const [x, y] = coord((i * 360) / segments.length + 180 / segments.length, 104)
+            return <circle key={i} cx={x} cy={y} r="2.8" fill="#fff3e0" />
+          })}
         </svg>
-        {/* Curseur dans un calque immobile qui partage le même viewBox : il
-            reste collé au bord de la roue quelle que soit la taille écran. */}
+        {/* Curseur et moyeu dans un calque immobile qui partage le même viewBox :
+            ils restent d'aplomb pendant que la roue tourne sous eux. */}
         <svg viewBox="-112 -112 224 224" className="pointer-events-none absolute inset-0 h-full w-full">
-          <path d="M -12 -111 L 12 -111 L 0 -86 Z" fill="#f5c451" stroke="#12091c" strokeWidth="2" strokeLinejoin="round" />
+          <circle r="23" fill="#1b0912" stroke="#ffc53d" strokeWidth="3" />
+          <text
+            textAnchor="middle" y="8" fontSize="24" fill="#ffc53d"
+            style={{ fontFamily: 'var(--font-titre)' }}
+          >
+            30
+          </text>
+          <path d="M -12 -111 L 12 -111 L 0 -86 Z" fill="#ffc53d" stroke="#1b0912" strokeWidth="2" strokeLinejoin="round" />
         </svg>
       </div>
 
@@ -119,30 +132,38 @@ function Feuille({ tour, releve, surReleve, surFermer, surRejouer }: {
   surFermer: () => void
   surRejouer: () => void
 }) {
+  const condamne = tour.type === 'defi'
   return (
     <div className="fixed inset-0 z-20 flex items-end justify-center">
       <button
         aria-label="Fermer"
         onClick={surFermer}
-        className="absolute inset-0 animate-[fondu_.2s_ease-out] bg-nuit/70 backdrop-blur-[2px]"
+        className="absolute inset-0 animate-[fondu_.2s_ease-out] bg-velours/75 backdrop-blur-[2px]"
       />
       <div
-        className="relative w-full max-w-md animate-[monter_.3s_cubic-bezier(.2,.9,.3,1)] rounded-t-3xl border-t border-white/10 bg-carte px-6 pt-3 text-center shadow-2xl"
-        style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))' }}
+        className="relative w-full max-w-md animate-[monter_.3s_cubic-bezier(.2,.9,.3,1)] overflow-hidden rounded-t-2xl border-t-4 border-or bg-carte text-center shadow-2xl"
       >
-        <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-white/25" />
-        <p className="text-5xl leading-none">{tour.emoji}</p>
-        <p className="titre mt-2 text-3xl">{tour.label}</p>
-        <p className="mt-2 text-white/80">{tour.consigne}</p>
-        <div className="mt-5 flex flex-col gap-2.5">
-          {tour.type === 'defi' && (
-            <button onClick={surReleve} disabled={releve} className={releve ? 'bouton-fantome' : 'bouton-or'}>
-              {releve ? '✅ Enregistré, respect' : 'J\'l\'ai fait 💪'}
+        {/* Le bandeau annonce la sentence avant même qu'on lise la consigne. */}
+        <p
+          className={`py-2 text-xs tracking-[0.25em] text-creme ${condamne ? 'bg-rouge' : 'bg-bleu-sombre'}`}
+          style={{ fontFamily: 'var(--font-titre)' }}
+        >
+          {condamne ? 'PAR DÉCRET ROYAL' : 'GRÂCE ROYALE'}
+        </p>
+        <div className="px-6 pt-4" style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))' }}>
+          <p className="animate-[tampon_.45s_cubic-bezier(.2,1.4,.4,1)] text-6xl leading-none">{tour.emoji}</p>
+          <p className="enseigne mt-3 text-4xl">{tour.label}</p>
+          <p className="mt-3 text-creme/80">{tour.consigne}</p>
+          <div className="mt-5 flex flex-col gap-2.5">
+            {condamne && (
+              <button onClick={surReleve} disabled={releve} className={releve ? 'bouton-fantome' : 'bouton-or'}>
+                {releve ? '✅ Enregistré, respect' : 'J\'l\'ai fait 💪'}
+              </button>
+            )}
+            <button onClick={surRejouer} className={condamne ? 'bouton-fantome' : 'bouton-or'}>
+              Retourner la roue 🎡
             </button>
-          )}
-          <button onClick={surRejouer} className={tour.type === 'defi' ? 'bouton-fantome' : 'bouton-or'}>
-            Retourner la roue 🎡
-          </button>
+          </div>
         </div>
       </div>
     </div>
@@ -154,13 +175,15 @@ function Quartier({ segment, index, nombre }: { segment: Segment; index: number;
   const debut = index * pas
   const fin = debut + pas
   const centre = debut + pas / 2
-  const couleur = segment.type === 'sauve' ? '#1f7a5a' : index % 2 === 0 ? '#3b1259' : '#7a1d5c'
+  // Le bleu de l'écharpe est la seule couleur froide de la palette : elle
+  // signale d'un coup d'œil le seul quartier où il n'y a rien à boire.
+  const couleur = segment.type === 'sauve' ? '#17699e' : index % 2 === 0 ? '#c0182a' : '#5e1028'
   return (
     <g>
-      <path d={secteur(debut, fin, 100)} fill={couleur} stroke="#f5c451" strokeWidth="1.2" />
+      <path d={secteur(debut, fin, 100)} fill={couleur} stroke="#ffc53d" strokeWidth="1.5" />
       <g transform={`rotate(${centre}) translate(0, -62)`}>
-        <text textAnchor="middle" fontSize="20" transform="rotate(0)">{segment.emoji}</text>
-        <text textAnchor="middle" y="18" fontSize="9" fill="#fff" fontWeight="bold">{segment.label}</text>
+        <text textAnchor="middle" fontSize="22" transform="rotate(0)">{segment.emoji}</text>
+        <text textAnchor="middle" y="19" fontSize="9" fill="#fff3e0" fontWeight="bold">{segment.label}</text>
       </g>
     </g>
   )
@@ -174,7 +197,11 @@ function secteur(debut: number, fin: number, rayon: number) {
   return `M 0 0 L ${p1} A ${rayon} ${rayon} 0 ${grand} 1 ${p2} Z`
 }
 
-function point(angle: number, rayon: number) {
+function coord(angle: number, rayon: number): [number, number] {
   const rad = ((angle - 90) * Math.PI) / 180
-  return `${(rayon * Math.cos(rad)).toFixed(2)} ${(rayon * Math.sin(rad)).toFixed(2)}`
+  return [+(rayon * Math.cos(rad)).toFixed(2), +(rayon * Math.sin(rad)).toFixed(2)]
+}
+
+function point(angle: number, rayon: number) {
+  return coord(angle, rayon).join(' ')
 }
