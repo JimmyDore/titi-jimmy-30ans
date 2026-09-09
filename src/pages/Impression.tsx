@@ -27,7 +27,7 @@ export default function Impression() {
       />
       <Feuille
         emoji="🎉"
-        titre="Les 30 ans de Titi & Jimmy"
+        titre="Les 30 ans de Titi & Djimi"
         soustitre="Les deux jeux, les classements, tout est là."
         url={BASE}
       />
@@ -43,7 +43,7 @@ function Feuille({ emoji, titre, soustitre, url }: {
       className="mx-auto flex flex-col items-center justify-center gap-6 border-b border-dashed border-gray-300 p-10 text-center"
       style={{ minHeight: '297mm', width: '210mm', maxWidth: '100%', breakAfter: 'page' }}
     >
-      <p className="text-sm uppercase tracking-[0.3em] text-gray-500">Les 30 ans de Titi &amp; Jimmy</p>
+      <p className="text-sm uppercase tracking-[0.3em] text-gray-500">Les 30 ans de Titi &amp; Djimi</p>
       <p style={{ fontSize: '90px', lineHeight: 1 }}>{emoji}</p>
       <h1 className="text-5xl" style={{ fontFamily: 'var(--font-titre)' }}>{titre}</h1>
       <p className="text-xl text-gray-700">{soustitre}</p>

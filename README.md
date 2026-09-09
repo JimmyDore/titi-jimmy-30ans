@@ -1,4 +1,4 @@
-# Les 30 ans de Titi & Jimmy
+# Les 30 ans de Titi & Djimi
 
 Mini-site de soirée : une **roue des défis** et un **quizz**, un pseudo par
 personne, deux classements publics et un panneau admin.
