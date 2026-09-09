@@ -37,7 +37,7 @@ export default function App() {
       return <Accueil joueur={joueur} surCreation={setJoueur} />
     default:
       return (
-        <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-6 p-6 text-center">
+        <div className="ecran items-center justify-center gap-6 text-center">
           <p className="text-6xl">🤷</p>
           <p className="text-white/70">Cette page n'existe pas. Tu as scanné quoi, exactement&nbsp;?</p>
           <button className="bouton-or" onClick={() => naviguer('/')}>Retour à l'accueil</button>

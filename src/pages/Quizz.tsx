@@ -66,26 +66,36 @@ export default function Quizz({ joueur }: { joueur: Joueur }) {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col p-6">
-      <Entete titre="Le quizz" />
-      <div className="mb-6 h-2 w-full overflow-hidden rounded-full bg-white/10">
+    <div className="ecran">
+      <Entete
+        titre="Le quizz"
+        action={
+          <span className="shrink-0 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-sm font-semibold text-white/60">
+            {index + 1}/{etat.questions.length}
+          </span>
+        }
+      />
+      <div className="h-1.5 w-full shrink-0 overflow-hidden rounded-full bg-white/10">
         <div
           className="h-full rounded-full bg-or transition-all duration-300"
           style={{ width: `${((index + (retour ? 1 : 0)) / etat.questions.length) * 100}%` }}
         />
       </div>
-      <p className="mb-2 text-sm text-white/40">Question {index + 1} / {etat.questions.length}</p>
-      <h2 className="mb-6 text-xl font-semibold leading-snug">{question.texte}</h2>
+      <h2 className="shrink-0 pt-4 text-lg font-semibold leading-snug">{question.texte}</h2>
 
-      <div className="flex flex-col gap-3">
+      {/* Les propositions occupent la place disponible et se resserrent quand la
+          correction apparaît : la bonne réponse et l'explication restent
+          visibles ensemble, sans un seul coup de pouce. */}
+      <div className="flex min-h-0 flex-1 flex-col justify-center gap-2.5 py-4">
         {question.options.map((o) => {
           const choisi = retour?.choisi === o.id
           const estBonne = retour?.bonne === o.id
-          let style = 'bouton-fantome'
+          const base = 'flex min-h-12 max-h-[5.5rem] flex-1 items-center justify-center rounded-2xl px-4 text-center text-base font-semibold leading-tight transition'
+          let style = `${base} border border-white/20 bg-white/5 text-white/90 active:scale-[0.98]`
           if (retour) {
-            if (estBonne || (choisi && retour.juste)) style = 'w-full rounded-2xl border border-emerald-400 bg-emerald-500/20 px-6 py-4 text-lg font-semibold'
-            else if (choisi) style = 'w-full rounded-2xl border border-rose-400 bg-rose-500/20 px-6 py-4 text-lg font-semibold'
-            else style = 'w-full rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-lg text-white/40'
+            if (estBonne || (choisi && retour.juste)) style = `${base} border border-emerald-400 bg-emerald-500/20`
+            else if (choisi) style = `${base} border border-rose-400 bg-rose-500/20`
+            else style = `${base} border border-white/10 bg-white/5 text-white/40`
           }
           return (
             <button key={o.id} onClick={() => repondre(o.id)} disabled={!!retour} className={style}>
@@ -96,13 +106,15 @@ export default function Quizz({ joueur }: { joueur: Joueur }) {
       </div>
 
       {retour && (
-        <div className="carte mt-6">
-          <p className={`text-lg font-bold ${retour.juste ? 'text-emerald-300' : 'text-rose-300'}`}>
+        <div className="shrink-0 animate-[apparaitre_.25s_ease-out] rounded-2xl border border-white/10 bg-carte/80 p-4 shadow-xl backdrop-blur">
+          <p className={`font-bold ${retour.juste ? 'text-emerald-300' : 'text-rose-300'}`}>
             {retour.juste ? 'Bien joué 🎉' : 'Raté 💀'}
           </p>
-          {retour.explication && <p className="mt-2 text-white/80">{retour.explication}</p>}
+          {retour.explication && (
+            <p className="mt-1 max-h-24 overflow-y-auto text-sm leading-snug text-white/75">{retour.explication}</p>
+          )}
           <button
-            className="bouton-or mt-5"
+            className="bouton-or mt-3"
             onClick={() => { setRetour(null); setIndex((i) => i + 1) }}
           >
             {index + 1 === etat.questions.length ? 'Voir mon score' : 'Question suivante'}
@@ -121,7 +133,7 @@ function Fin({ surTerminer }: { surTerminer: () => void }) {
 function Resultat({ pseudo, score, total }: { pseudo: string; score: number; total: number }) {
   const mot = score / total >= 0.8 ? 'Monstre.' : score / total >= 0.5 ? 'Correct.' : 'Aïe.'
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-6 p-6 text-center">
+    <div className="ecran justify-center gap-6 text-center">
       <p className="text-6xl">{score / total >= 0.8 ? '🏆' : score / total >= 0.5 ? '👏' : '🫠'}</p>
       <div>
         <p className="text-white/60">{pseudo}</p>
@@ -131,15 +143,17 @@ function Resultat({ pseudo, score, total }: { pseudo: string; score: number; tot
       <p className="text-sm text-white/50">
         Une seule tentative par personne — c'est plié pour toi.
       </p>
-      <button className="bouton-or" onClick={() => naviguer('/classements')}>Voir le classement</button>
-      <button className="bouton-fantome" onClick={() => naviguer('/roue')}>Aller tourner la roue</button>
+      <div className="flex flex-col gap-3">
+        <button className="bouton-or" onClick={() => naviguer('/classements')}>Voir le classement</button>
+        <button className="bouton-fantome" onClick={() => naviguer('/roue')}>Aller tourner la roue</button>
+      </div>
     </div>
   )
 }
 
 function Message({ texte }: { texte: string }) {
   return (
-    <div className="mx-auto flex min-h-screen max-w-md items-center justify-center p-6 text-center text-white/70">
+    <div className="ecran items-center justify-center text-center text-white/70">
       {texte}
     </div>
   )

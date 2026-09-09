@@ -1,16 +1,17 @@
 import { naviguer } from '../routeur'
 
-export default function Entete({ titre, retour = '/' }: { titre: string; retour?: string }) {
+export default function Entete({ titre, retour = '/', action }: {
+  titre: string
+  retour?: string
+  action?: React.ReactNode
+}) {
   return (
-    <header className="mb-5 flex items-center gap-3">
-      <button
-        onClick={() => naviguer(retour)}
-        aria-label="Retour"
-        className="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-white/80"
-      >
+    <header className="flex shrink-0 items-center gap-2.5 pb-3">
+      <button onClick={() => naviguer(retour)} aria-label="Retour" className="rond">
         ←
       </button>
-      <h1 className="titre text-2xl">{titre}</h1>
+      <h1 className="titre flex-1 truncate text-xl">{titre}</h1>
+      {action}
     </header>
   )
 }

@@ -51,17 +51,26 @@ export default function Roue({ joueur }: { joueur: Joueur }) {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col p-6">
-      <Entete titre="La roue des défis" />
-      <p className="mb-4 text-sm text-white/50">
+    <div className="ecran">
+      <Entete
+        titre="La roue des défis"
+        action={
+          <button onClick={() => naviguer('/classements')} aria-label="Voir les classements" className="rond text-lg">
+            🏆
+          </button>
+        }
+      />
+      <p className="shrink-0 text-center text-xs text-white/40">
         {joueur.pseudo} — autant de tours que tu veux. C'est toi qui vois.
       </p>
 
-      <div className="relative mx-auto aspect-square w-full max-w-[340px]">
-        <div className="absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-1 text-4xl drop-shadow">▼</div>
+      {/* La roue prend tout l'espace qui reste et rien de plus : le SVG se
+          recadre tout seul, donc le bouton reste sous le pouce sur un vieil
+          iPhone comme sur un grand écran. */}
+      <div className="relative -mx-3 min-h-0 flex-1 py-3">
         <svg
-          viewBox="-110 -110 220 220"
-          className="h-full w-full drop-shadow-2xl"
+          viewBox="-112 -112 224 224"
+          className="absolute inset-0 h-full w-full drop-shadow-2xl"
           style={{
             transform: `rotate(${rotation}deg)`,
             transition: tourne ? `transform ${DUREE_MS}ms cubic-bezier(0.16, 0.85, 0.24, 1)` : 'none',
@@ -72,29 +81,70 @@ export default function Roue({ joueur }: { joueur: Joueur }) {
           ))}
           <circle r="20" fill="#12091c" stroke="#f5c451" strokeWidth="3" />
         </svg>
+        {/* Curseur dans un calque immobile qui partage le même viewBox : il
+            reste collé au bord de la roue quelle que soit la taille écran. */}
+        <svg viewBox="-112 -112 224 224" className="pointer-events-none absolute inset-0 h-full w-full">
+          <path d="M -12 -111 L 12 -111 L 0 -86 Z" fill="#f5c451" stroke="#12091c" strokeWidth="2" strokeLinejoin="round" />
+        </svg>
       </div>
 
-      <button onClick={tourner} disabled={tourne} className="bouton-or mt-8">
+      {erreur && <p className="shrink-0 pb-2 text-center text-sm text-rose-300">{erreur}</p>}
+
+      <button onClick={tourner} disabled={tourne} className="bouton-or shrink-0">
         {tourne ? 'Ça tourne…' : 'Tourner la roue'}
       </button>
-      {erreur && <p className="mt-3 text-center text-sm text-rose-300">{erreur}</p>}
 
       {tour && (
-        <div className="carte mt-6 text-center">
-          <p className="text-6xl">{tour.emoji}</p>
-          <p className="titre mt-2 text-3xl">{tour.label}</p>
-          <p className="mt-3 text-white/80">{tour.consigne}</p>
+        <Feuille
+          tour={tour}
+          releve={releve}
+          surReleve={jeLaiFait}
+          surFermer={() => setTour(null)}
+          surRejouer={tourner}
+        />
+      )}
+    </div>
+  )
+}
+
+/**
+ * Le résultat monte par-dessus la roue au lieu de s'ajouter dessous : on voit
+ * son sort sans avoir à faire défiler quoi que ce soit, et « Retourner la
+ * roue » est déjà là, à portée de pouce.
+ */
+function Feuille({ tour, releve, surReleve, surFermer, surRejouer }: {
+  tour: Tour
+  releve: boolean
+  surReleve: () => void
+  surFermer: () => void
+  surRejouer: () => void
+}) {
+  return (
+    <div className="fixed inset-0 z-20 flex items-end justify-center">
+      <button
+        aria-label="Fermer"
+        onClick={surFermer}
+        className="absolute inset-0 animate-[fondu_.2s_ease-out] bg-nuit/70 backdrop-blur-[2px]"
+      />
+      <div
+        className="relative w-full max-w-md animate-[monter_.3s_cubic-bezier(.2,.9,.3,1)] rounded-t-3xl border-t border-white/10 bg-carte px-6 pt-3 text-center shadow-2xl"
+        style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))' }}
+      >
+        <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-white/25" />
+        <p className="text-5xl leading-none">{tour.emoji}</p>
+        <p className="titre mt-2 text-3xl">{tour.label}</p>
+        <p className="mt-2 text-white/80">{tour.consigne}</p>
+        <div className="mt-5 flex flex-col gap-2.5">
           {tour.type === 'defi' && (
-            <button onClick={jeLaiFait} disabled={releve} className={releve ? 'bouton-fantome mt-5' : 'bouton-or mt-5'}>
+            <button onClick={surReleve} disabled={releve} className={releve ? 'bouton-fantome' : 'bouton-or'}>
               {releve ? '✅ Enregistré, respect' : 'J\'l\'ai fait 💪'}
             </button>
           )}
+          <button onClick={surRejouer} className={tour.type === 'defi' ? 'bouton-fantome' : 'bouton-or'}>
+            Retourner la roue 🎡
+          </button>
         </div>
-      )}
-
-      <button onClick={() => naviguer('/classements')} className="bouton-fantome mt-8 mb-2">
-        Voir les classements
-      </button>
+      </div>
     </div>
   )
 }

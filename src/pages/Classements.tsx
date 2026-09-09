@@ -19,43 +19,46 @@ export default function Classements() {
   }, [])
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col p-6">
+    <div className="ecran">
       <Entete titre="Les classements" />
 
-      <div className="mb-5 flex gap-2 rounded-2xl bg-white/5 p-1">
+      <div className="flex shrink-0 gap-2 rounded-2xl bg-white/5 p-1">
         <Onglet actif={onglet === 'quizz'} onClick={() => setOnglet('quizz')}>🧠 Quizz</Onglet>
         <Onglet actif={onglet === 'roue'} onClick={() => setOnglet('roue')}>🎡 Roue</Onglet>
       </div>
 
-      {!donnees && <p className="text-center text-white/50">Chargement…</p>}
+      {/* Seule la liste défile, dans son cadre : l'écran lui-même ne bouge pas. */}
+      <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+        {!donnees && <p className="text-center text-white/50">Chargement…</p>}
 
-      {donnees && onglet === 'quizz' && (
-        donnees.quizz.length === 0
-          ? <Vide texte="Personne n'a encore fini le quizz. Sois le premier." />
-          : <ol className="flex flex-col gap-2">
-              {donnees.quizz.map((l, i) => (
-                <Ligne key={l.pseudo} rang={i + 1} pseudo={l.pseudo} moi={moi}
-                  droite={`${l.score} / ${donnees.total}`} />
-              ))}
-            </ol>
-      )}
-
-      {donnees && onglet === 'roue' && (
-        donnees.roue.length === 0
-          ? <Vide texte="Personne n'a encore tourné. Lâches." />
-          : <>
-              <p className="mb-3 text-xs text-white/40">
-                Classé sur les défis <strong>relevés</strong>, pas sur le nombre de tours.
-              </p>
-              <ol className="flex flex-col gap-2">
-                {donnees.roue.map((l, i) => (
+        {donnees && onglet === 'quizz' && (
+          donnees.quizz.length === 0
+            ? <Vide texte="Personne n'a encore fini le quizz. Sois le premier." />
+            : <ol className="flex flex-col gap-2">
+                {donnees.quizz.map((l, i) => (
                   <Ligne key={l.pseudo} rang={i + 1} pseudo={l.pseudo} moi={moi}
-                    droite={`${l.releves ?? 0} relevé${(l.releves ?? 0) > 1 ? 's' : ''}`}
-                    sous={`${l.tours} tour${l.tours > 1 ? 's' : ''}`} />
+                    droite={`${l.score} / ${donnees.total}`} />
                 ))}
               </ol>
-            </>
-      )}
+        )}
+
+        {donnees && onglet === 'roue' && (
+          donnees.roue.length === 0
+            ? <Vide texte="Personne n'a encore tourné. Lâches." />
+            : <>
+                <p className="mb-3 text-xs text-white/40">
+                  Classé sur les défis <strong>relevés</strong>, pas sur le nombre de tours.
+                </p>
+                <ol className="flex flex-col gap-2">
+                  {donnees.roue.map((l, i) => (
+                    <Ligne key={l.pseudo} rang={i + 1} pseudo={l.pseudo} moi={moi}
+                      droite={`${l.releves ?? 0} relevé${(l.releves ?? 0) > 1 ? 's' : ''}`}
+                      sous={`${l.tours} tour${l.tours > 1 ? 's' : ''}`} />
+                  ))}
+                </ol>
+              </>
+        )}
+      </div>
     </div>
   )
 }

@@ -10,7 +10,7 @@
   --font-titre: "Georgia", "Times New Roman", serif;
 }
 
-html, body, #root { min-height: 100%; }
+html, body, #root { height: 100%; }
 
 body {
   background:
@@ -23,23 +23,60 @@ body {
      déclencher un zoom accidentel ni un tirage sélectionné par erreur. */
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
+  /* Les écrans tiennent dans la fenêtre : plus rien ne doit rebondir sous le
+     doigt, sinon ça donne l'illusion qu'il reste du contenu plus bas. */
+  overscroll-behavior-y: none;
+}
+
+/* Un écran = exactement une fenêtre. Le contenu s'adapte en hauteur (la roue
+   rétrécit, la liste défile dans son cadre) plutôt que de pousser vers le bas :
+   personne ne scrolle pour trouver le bouton qui vient d'apparaître. */
+@utility ecran {
+  /* `overflow-y: auto` n'est qu'un filet : le contenu tient normalement dans la
+     hauteur. Sur un écran minuscule (paysage, clavier ouvert), mieux vaut
+     pouvoir atteindre le bouton en glissant que de le voir coupé. */
+  @apply mx-auto flex w-full max-w-md flex-col overflow-x-hidden overflow-y-auto;
+  height: 100dvh;
+  padding-left: max(1.25rem, env(safe-area-inset-left));
+  padding-right: max(1.25rem, env(safe-area-inset-right));
+  padding-top: calc(0.75rem + env(safe-area-inset-top));
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
 }
 
 @utility bouton-or {
-  @apply w-full rounded-2xl bg-gradient-to-b from-or to-or-sombre px-6 py-4 text-center text-lg font-bold text-nuit shadow-lg transition active:scale-[0.98] disabled:opacity-40;
+  @apply w-full rounded-2xl bg-gradient-to-b from-or to-or-sombre px-5 py-3.5 text-center text-lg font-bold text-nuit shadow-lg transition active:scale-[0.98] disabled:opacity-40;
 }
 
 @utility bouton-fantome {
-  @apply w-full rounded-2xl border border-white/20 bg-white/5 px-6 py-4 text-center text-lg font-semibold text-white/90 transition active:scale-[0.98] disabled:opacity-40;
+  @apply w-full rounded-2xl border border-white/20 bg-white/5 px-5 py-3.5 text-center text-lg font-semibold text-white/90 transition active:scale-[0.98] disabled:opacity-40;
 }
 
 @utility carte {
   @apply rounded-3xl border border-white/10 bg-carte/70 p-5 shadow-xl backdrop-blur;
 }
 
+@utility rond {
+  @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80;
+}
+
 @utility titre {
   font-family: var(--font-titre);
   @apply font-bold tracking-tight text-or;
+}
+
+@keyframes monter {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes apparaitre {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fondu {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @media print {
