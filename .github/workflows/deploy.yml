@@ -1,0 +1,78 @@
+name: Deploy to Hetzner
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-titijimmy
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Tests front (vitest)
+        run: npm test
+      - name: Tests serveur (node --test)
+        run: cd server && node --test "test/*.test.mjs"
+      - run: npm run build
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          echo "${{ secrets.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Deploy on server
+        env:
+          ADMIN_CODE: ${{ secrets.ADMIN_CODE }}
+        run: |
+          ssh -i ~/.ssh/id_ed25519 root@77.42.23.215 "ADMIN_CODE='$ADMIN_CODE' bash -s" <<'EOF'
+          set -euo pipefail
+          REPO=https://github.com/JimmyDore/titi-jimmy-30ans.git
+          DIR=/root/titijimmy
+          if [ -d "$DIR/.git" ]; then
+            cd "$DIR"
+            git fetch --prune origin
+            git checkout -B main origin/main
+          else
+            git clone "$REPO" "$DIR"
+            cd "$DIR"
+          fi
+          # Le code admin ne vit que dans le secret GitHub : on le réécrit à
+          # chaque déploiement plutôt que de le laisser traîner dans le repo.
+          umask 077
+          printf 'ADMIN_CODE=%s\n' "$ADMIN_CODE" > "$DIR/.env"
+          docker compose up -d --build
+          docker image prune -f
+          EOF
+
+      - name: Health check
+        run: |
+          for i in $(seq 1 30); do
+            page=$(curl -fsS -o /dev/null -w '%{http_code}' https://30anstitietjimmy.jimmydore.fr/ || true)
+            api=$(curl -fsS -o /dev/null -w '%{http_code}' https://30anstitietjimmy.jimmydore.fr/api/health || true)
+            if [ "$page" = "200" ] && [ "$api" = "200" ]; then
+              echo "Health check passé à la tentative $i"
+              curl -fsS https://30anstitietjimmy.jimmydore.fr/api/health
+              exit 0
+            fi
+            echo "Tentative $i : page='$page' api='$api', nouvelle tentative dans 5 s..."
+            sleep 5
+          done
+          echo "Health check en échec après 30 tentatives"
+          exit 1

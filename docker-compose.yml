@@ -1,0 +1,38 @@
+services:
+  titijimmy-web:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.web
+    image: titijimmy-web
+    container_name: titijimmy-web
+    restart: unless-stopped
+    depends_on:
+      - titijimmy-api
+    networks:
+      - ravetycoon_default
+
+  titijimmy-api:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.api
+    image: titijimmy-api
+    container_name: titijimmy-api
+    restart: unless-stopped
+    environment:
+      # Pas de valeur par défaut : le repo est public. Le déploiement écrit le
+      # .env à côté de ce fichier depuis le secret GitHub ADMIN_CODE, et
+      # docker compose refuse de démarrer s'il manque.
+      ADMIN_CODE: ${ADMIN_CODE:?ADMIN_CODE manquant (secret GitHub, écrit dans .env par le déploiement)}
+    volumes:
+      - titijimmy-data:/data
+    networks:
+      - ravetycoon_default
+
+volumes:
+  titijimmy-data:
+
+# Le réseau appartient au stack RaveTycoon, qui héberge le seul Caddy de la
+# machine (et le seul conteneur qui publie 80/443).
+networks:
+  ravetycoon_default:
+    external: true

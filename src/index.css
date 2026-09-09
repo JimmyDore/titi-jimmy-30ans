@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+  --color-nuit: #12091c;
+  --color-nuit-clair: #1e0f2e;
+  --color-carte: #251440;
+  --color-or: #f5c451;
+  --color-or-sombre: #b8862b;
+  --color-magenta: #c026d3;
+  --font-titre: "Georgia", "Times New Roman", serif;
+}
+
+html, body, #root { min-height: 100%; }
+
+body {
+  background:
+    radial-gradient(circle at 20% 0%, #3b1259 0%, transparent 55%),
+    radial-gradient(circle at 90% 100%, #4a1140 0%, transparent 50%),
+    var(--color-nuit);
+  background-attachment: fixed;
+  color: #f4ecff;
+  /* Le site se joue debout, une bière dans l'autre main : rien ne doit
+     déclencher un zoom accidentel ni un tirage sélectionné par erreur. */
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@utility bouton-or {
+  @apply w-full rounded-2xl bg-gradient-to-b from-or to-or-sombre px-6 py-4 text-center text-lg font-bold text-nuit shadow-lg transition active:scale-[0.98] disabled:opacity-40;
+}
+
+@utility bouton-fantome {
+  @apply w-full rounded-2xl border border-white/20 bg-white/5 px-6 py-4 text-center text-lg font-semibold text-white/90 transition active:scale-[0.98] disabled:opacity-40;
+}
+
+@utility carte {
+  @apply rounded-3xl border border-white/10 bg-carte/70 p-5 shadow-xl backdrop-blur;
+}
+
+@utility titre {
+  font-family: var(--font-titre);
+  @apply font-bold tracking-tight text-or;
+}
+
+@media print {
+  body { background: #fff; color: #000; }
+  .sans-impression { display: none !important; }
+}

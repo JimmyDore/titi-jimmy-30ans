@@ -1,0 +1,188 @@
+{
+  "_lisezmoi": "LE fichier a editer. Voir la section « Editer le contenu » du README. Ne JAMAIS reutiliser un id deja servi : les parties en cours sont rattachees aux ids.",
+
+  "roue": {
+    "segments": [
+      { "id": "piment-1", "type": "defi", "label": "Piment", "emoji": "🌶️", "consigne": "Croque le piment le plus fort de la table. Entier. Pas d'eau pendant 30 secondes.", "poids": 1 },
+      { "id": "shot-1", "type": "defi", "label": "Shot", "emoji": "🥃", "consigne": "Un shot, cul sec, choisi par la personne à ta gauche.", "poids": 1 },
+      { "id": "piment-2", "type": "defi", "label": "Piment", "emoji": "🌶️", "consigne": "Croque le piment le plus fort de la table. Entier. Pas d'eau pendant 30 secondes.", "poids": 1 },
+      { "id": "shot-2", "type": "defi", "label": "Shot", "emoji": "🥃", "consigne": "Un shot, cul sec, choisi par la personne à ta gauche.", "poids": 1 },
+      { "id": "sauve-1", "type": "sauve", "label": "Sauvé", "emoji": "🍀", "consigne": "Rien à faire. Tu peux repartir la tête haute et le foie intact.", "poids": 1 },
+      { "id": "piment-3", "type": "defi", "label": "Piment", "emoji": "🌶️", "consigne": "Croque le piment le plus fort de la table. Entier. Pas d'eau pendant 30 secondes.", "poids": 1 },
+      { "id": "shot-3", "type": "defi", "label": "Shot", "emoji": "🥃", "consigne": "Un shot, cul sec, choisi par la personne à ta gauche.", "poids": 1 },
+      { "id": "sauve-2", "type": "sauve", "label": "Sauvé", "emoji": "🍀", "consigne": "Rien à faire. Tu peux repartir la tête haute et le foie intact.", "poids": 1 }
+    ]
+  },
+
+  "quizz": {
+    "questions": [
+      {
+        "id": "anecdote-maison",
+        "type": "duo",
+        "texte": "Qui était trop déglingué pour rentrer chez lui et s'est endormi devant la maison ?",
+        "options": [{ "id": "titi", "label": "Titi" }, { "id": "djimi", "label": "Djimi" }],
+        "reponse": "titi",
+        "explication": "Titi. Le paillasson était plus accueillant que la serrure."
+      },
+      {
+        "id": "anecdote-voiture",
+        "type": "duo",
+        "texte": "Qui était trop déglingué pour rentrer chez lui et s'est endormi dans sa voiture ?",
+        "options": [{ "id": "titi", "label": "Titi" }, { "id": "djimi", "label": "Djimi" }],
+        "reponse": "djimi",
+        "explication": "Djimi. Une voiture, ça a des sièges inclinables, c'est déjà un lit."
+      },
+      {
+        "id": "anecdote-impots",
+        "type": "duo",
+        "texte": "Qui a pissé dans la boîte aux lettres des impôts ?",
+        "options": [{ "id": "titi", "label": "Titi" }, { "id": "djimi", "label": "Djimi" }],
+        "reponse": "djimi",
+        "explication": "Djimi. Une contribution volontaire, en nature."
+      },
+      {
+        "id": "cg-guerre",
+        "type": "qcm",
+        "texte": "Combien de temps a duré la guerre la plus courte de l'histoire (Royaume-Uni contre Zanzibar, 1896) ?",
+        "options": [
+          { "id": "a", "label": "38 minutes" },
+          { "id": "b", "label": "3 jours" },
+          { "id": "c", "label": "6 heures" },
+          { "id": "d", "label": "2 semaines" }
+        ],
+        "reponse": "a",
+        "explication": "38 minutes. Le temps d'une machine à laver."
+      },
+      {
+        "id": "cg-gorille",
+        "type": "qcm",
+        "texte": "Quel est le nom scientifique du gorille des plaines de l'Ouest ?",
+        "options": [
+          { "id": "a", "label": "Gorilla africanus" },
+          { "id": "b", "label": "Gorilla gorilla gorilla" },
+          { "id": "c", "label": "Primatus maximus" },
+          { "id": "d", "label": "Gorilla occidentalis" }
+        ],
+        "reponse": "b",
+        "explication": "Gorilla gorilla gorilla. Le mec qui a nommé cette espèce était en fin de journée."
+      },
+      {
+        "id": "cg-pieuvre",
+        "type": "qcm",
+        "texte": "Combien de cœurs a une pieuvre ?",
+        "options": [
+          { "id": "a", "label": "1" },
+          { "id": "b", "label": "2" },
+          { "id": "c", "label": "3" },
+          { "id": "d", "label": "8, un par bras" }
+        ],
+        "reponse": "c",
+        "explication": "3. Et le sang est bleu. La pieuvre en fait toujours trop."
+      },
+      {
+        "id": "cg-fuseaux",
+        "type": "qcm",
+        "texte": "Quel pays compte le plus de fuseaux horaires au monde ?",
+        "options": [
+          { "id": "a", "label": "La Russie" },
+          { "id": "b", "label": "Les États-Unis" },
+          { "id": "c", "label": "La France" },
+          { "id": "d", "label": "La Chine" }
+        ],
+        "reponse": "c",
+        "explication": "La France, avec 12 fuseaux. Merci les DOM-TOM."
+      },
+      {
+        "id": "cg-venus",
+        "type": "qcm",
+        "texte": "Sur Vénus, qu'est-ce qui dure le plus longtemps ?",
+        "options": [
+          { "id": "a", "label": "Un jour" },
+          { "id": "b", "label": "Une année" },
+          { "id": "c", "label": "C'est exactement pareil" },
+          { "id": "d", "label": "Une semaine" }
+        ],
+        "reponse": "a",
+        "explication": "Un jour (243 jours terrestres) dure plus longtemps qu'une année (225). Sur Vénus, tu fêtes ton anniversaire avant d'avoir fini ta nuit."
+      },
+      {
+        "id": "cg-cafard",
+        "type": "qcm",
+        "texte": "Combien de temps un cafard peut-il survivre sans sa tête ?",
+        "options": [
+          { "id": "a", "label": "Quelques secondes" },
+          { "id": "b", "label": "Une heure" },
+          { "id": "c", "label": "Environ une semaine" },
+          { "id": "d", "label": "Un an" }
+        ],
+        "reponse": "c",
+        "explication": "Environ une semaine. Il ne meurt pas de la décapitation, il meurt de faim."
+      },
+      {
+        "id": "cg-ebay",
+        "type": "qcm",
+        "texte": "Quel a été le tout premier objet vendu sur eBay ?",
+        "options": [
+          { "id": "a", "label": "Un pointeur laser cassé" },
+          { "id": "b", "label": "Une Game Boy" },
+          { "id": "c", "label": "Une voiture" },
+          { "id": "d", "label": "Un timbre rare" }
+        ],
+        "reponse": "a",
+        "explication": "Un pointeur laser cassé, vendu 14,83 $. L'acheteur collectionnait les pointeurs lasers cassés. Vraiment."
+      },
+      {
+        "id": "cg-hoquet",
+        "type": "qcm",
+        "texte": "Quel est le record du monde de la plus longue crise de hoquet ?",
+        "options": [
+          { "id": "a", "label": "3 jours" },
+          { "id": "b", "label": "8 mois" },
+          { "id": "c", "label": "12 ans" },
+          { "id": "d", "label": "68 ans" }
+        ],
+        "reponse": "d",
+        "explication": "68 ans. Charles Osborne a eu le hoquet de 1922 à 1990. Il a quand même eu 8 enfants."
+      },
+      {
+        "id": "cg-cochon-inde",
+        "type": "qcm",
+        "texte": "En Suisse, qu'est-ce qui est interdit par la loi ?",
+        "options": [
+          { "id": "a", "label": "Tondre sa pelouse le dimanche" },
+          { "id": "b", "label": "Posséder un seul cochon d'Inde" },
+          { "id": "c", "label": "Porter un chapeau en intérieur" },
+          { "id": "d", "label": "Manger du fromage après 22 h" }
+        ],
+        "reponse": "b",
+        "explication": "Posséder un seul cochon d'Inde : c'est un animal social, la loi impose de lui trouver un copain."
+      },
+      {
+        "id": "cg-banane",
+        "type": "qcm",
+        "texte": "D'un point de vue botanique, laquelle de ces affirmations est vraie ?",
+        "options": [
+          { "id": "a", "label": "La fraise est une baie, pas la banane" },
+          { "id": "b", "label": "La banane est une baie, pas la fraise" },
+          { "id": "c", "label": "Les deux sont des baies" },
+          { "id": "d", "label": "Aucune des deux" }
+        ],
+        "reponse": "b",
+        "explication": "La banane est une baie. La fraise n'en est pas une, et ce n'est même pas un fruit."
+      },
+      {
+        "id": "cg-miel",
+        "type": "qcm",
+        "texte": "Combien de temps se conserve un pot de miel bien fermé ?",
+        "options": [
+          { "id": "a", "label": "2 ans" },
+          { "id": "b", "label": "10 ans" },
+          { "id": "c", "label": "50 ans" },
+          { "id": "d", "label": "Indéfiniment" }
+        ],
+        "reponse": "d",
+        "explication": "Indéfiniment. On a retrouvé du miel de 3 000 ans dans des tombes égyptiennes, encore comestible."
+      }
+    ]
+  }
+}

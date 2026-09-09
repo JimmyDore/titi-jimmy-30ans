@@ -1,0 +1,11 @@
+FROM node:22-alpine
+WORKDIR /app
+COPY server/package.json ./
+COPY server/*.mjs ./
+COPY content.json /app/content.json
+ENV PORT=8787 \
+    DB_PATH=/data/titijimmy.db \
+    CONTENT_PATH=/app/content.json
+VOLUME /data
+EXPOSE 8787
+CMD ["node", "index.mjs"]
