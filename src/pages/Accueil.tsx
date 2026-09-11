@@ -28,6 +28,7 @@ export default function Accueil({ joueur, surCreation }: {
         <nav className="flex shrink-0 flex-col gap-2.5">
           <Tuile emoji="🎡" titre="La roue des défis" texte="Tu tournes, tu assumes." onClick={() => naviguer('/roue')} />
           <Tuile emoji="🧠" titre="Le quizz" texte="Une seule tentative. Réfléchis." onClick={() => naviguer('/quizz')} />
+          <Tuile emoji="🎯" titre="Rentre ton score" texte="Gagné ou perdu, ça reste gravé." onClick={() => naviguer('/scores')} />
           <Tuile emoji="🏆" titre="Les classements" texte="Qui gagne, qui se ridiculise." onClick={() => naviguer('/classements')} />
         </nav>
       ) : (

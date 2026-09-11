@@ -76,6 +76,7 @@ function Panneau({ code, surDeconnexion }: { code: string; surDeconnexion: () =>
   const [ouvert, setOuvert] = useState<string | null>(null)
   const [resetEnCours, setResetEnCours] = useState<string | null>(null)
   const [confirmation, setConfirmation] = useState('')
+  const [aSupprimer, setASupprimer] = useState<string | null>(null)
 
   const charger = useCallback(() => {
     api.donneesAdmin(code).then(setDonnees).catch(() => surDeconnexion())
@@ -90,7 +91,25 @@ function Panneau({ code, surDeconnexion }: { code: string; surDeconnexion: () =>
   if (!donnees) return <p className="p-6 text-white/60">Chargement…</p>
 
   const questions = new Map(donnees.contenu.quizz.questions.map((q) => [q.id, q]))
-  const total = donnees.contenu.quizz.questions.length
+  // Le quizz de chacun ne fait pas la taille du vivier : c'est un tirage par
+  // catégorie. Le dénominateur affiché ici doit être celui que le joueur voit.
+  const total = donnees.contenu.quizz.categories.reduce((somme, cat) => {
+    const dispo = donnees.contenu.quizz.questions.filter((q) => q.categorie === cat.id).length
+    return somme + Math.min(cat.tirage, dispo)
+  }, 0)
+
+  const emojis = new Map(donnees.contenu.jeux.map((j) => [j.id, j.emoji]))
+
+  async function supprimerPartie(id: string) {
+    // Deux appuis : un tap malheureux ne doit pas effacer la victoire de quelqu'un.
+    if (aSupprimer !== id) {
+      setASupprimer(id)
+      return
+    }
+    setASupprimer(null)
+    await api.supprimerPartieAdmin(code, id).catch(() => {})
+    charger()
+  }
 
   async function lancerReset(portee: string) {
     await api.resetAdmin(code, portee)
@@ -103,10 +122,11 @@ function Panneau({ code, surDeconnexion }: { code: string; surDeconnexion: () =>
     <div className="mx-auto flex min-h-screen max-w-2xl flex-col p-4">
       <Entete titre="Admin" />
 
-      <div className="mb-4 grid grid-cols-3 gap-2 text-center">
+      <div className="mb-4 grid grid-cols-2 gap-2 text-center sm:grid-cols-4">
         <Stat valeur={donnees.joueurs.length} libelle="joueurs" />
         <Stat valeur={donnees.joueurs.filter((j) => j.quizz_fini_at).length} libelle="quizz finis" />
         <Stat valeur={donnees.tours.length} libelle="tours de roue" />
+        <Stat valeur={donnees.parties.length} libelle="parties de jeux" />
       </div>
 
       <h2 className="mb-2 mt-4 text-sm uppercase tracking-widest text-white/40">Joueurs</h2>
@@ -162,12 +182,42 @@ function Panneau({ code, surDeconnexion }: { code: string; surDeconnexion: () =>
         })}
       </div>
 
+      <h2 className="mb-2 mt-8 text-sm uppercase tracking-widest text-white/40">Parties de jeux</h2>
+      <div className="flex flex-col gap-2">
+        {donnees.parties.length === 0 && <p className="carte text-white/50">Aucune partie saisie.</p>}
+        {donnees.parties.map((p) => (
+          <div key={p.id} className="carte flex items-center gap-3 p-3 text-sm">
+            <span className="text-2xl">{emojis.get(p.jeu_id) ?? '🎲'}</span>
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold">
+                {p.jeu_nom}
+                <span className="ml-2 font-normal text-white/40">{heure(p.saisie_at)} · par {p.auteur ?? '?'}</span>
+              </p>
+              <p className="text-white/70">
+                <span className="text-emerald-300">🏆 {p.gagnants.join(', ')}</span>
+                {p.score_gagnants !== null ? ` ${p.score_gagnants} – ${p.score_perdants} ` : ' contre '}
+                {p.perdants.join(', ')}
+              </p>
+            </div>
+            <button
+              onClick={() => supprimerPartie(p.id)}
+              className={`shrink-0 rounded-xl border px-3 py-2 font-semibold ${
+                aSupprimer === p.id ? 'border-rose-500/60 bg-rose-500/15 text-rose-200' : 'border-white/15 bg-white/5 text-white/60'
+              }`}
+            >
+              {aSupprimer === p.id ? 'Sûr ?' : 'Supprimer'}
+            </button>
+          </div>
+        ))}
+      </div>
+
       <h2 className="mb-2 mt-8 text-sm uppercase tracking-widest text-white/40">Remise à zéro</h2>
       <div className="carte flex flex-col gap-2">
         {resetEnCours === null ? (
           <>
             <BoutonReset onClick={() => setResetEnCours('roue')}>Effacer les tours de roue</BoutonReset>
             <BoutonReset onClick={() => setResetEnCours('quizz')}>Effacer les résultats du quizz</BoutonReset>
+            <BoutonReset onClick={() => setResetEnCours('jeux')}>Effacer les scores des jeux</BoutonReset>
             <BoutonReset onClick={() => setResetEnCours('joueurs')}>Effacer les joueurs (et tout le reste)</BoutonReset>
             <BoutonReset onClick={() => setResetEnCours('tout')} danger>TOUT remettre à zéro</BoutonReset>
           </>
@@ -196,6 +246,11 @@ function Panneau({ code, surDeconnexion }: { code: string; surDeconnexion: () =>
       <p className="mt-2 pb-6 text-center text-xs text-white/20">Rafraîchissement automatique toutes les 10 s.</p>
     </div>
   )
+}
+
+/** SQLite écrit en UTC : sans conversion, une partie de 21 h s'afficherait à 19 h. */
+function heure(sqlite: string) {
+  return new Date(`${sqlite.replace(' ', 'T')}Z`).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
 }
 
 function Stat({ valeur, libelle }: { valeur: number; libelle: string }) {

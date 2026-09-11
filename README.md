@@ -1,13 +1,14 @@
 # Les 30 ans de Titi & Djimi
 
-Mini-site de soirée : une **roue des défis** et un **quizz**, un pseudo par
-personne, deux classements publics et un panneau admin.
+Mini-site de soirée : une **roue des défis**, un **quizz** et des **scores de
+jeux** (palet, Mölkky, beer pong…), un pseudo par personne, des classements
+publics et un panneau admin.
 
 **En ligne :** https://30anstitietjimmy.jimmydore.fr
 
 ## Comment ça marche
 
-Chacun scanne un QR code (`/roue` ou `/quizz`), choisit un pseudo — gardé dans
+Chacun scanne un QR code (`/roue`, `/quizz` ou `/scores`), choisit un pseudo — gardé dans
 le localStorage de son téléphone — et joue.
 
 - **Roue des défis** : autant de tours qu'on veut. Le tirage est fait *par le
@@ -16,19 +17,53 @@ le localStorage de son téléphone — et joue.
 - **Quizz** : une seule tentative par pseudo, questions dans un ordre propre à
   chaque joueur, correction affichée immédiatement. Un quizz interrompu reprend
   exactement où il en était.
+- **Rentre ton score** (`/scores`) : on choisit un jeu (palet, Mölkky,
+  cornhole… ou un jeu de société dont on tape le nom), les noms de chaque camp
+  — libres, la tante sans téléphone compte aussi —, gagné ou perdu, et un score
+  facultatif. L'auteur peut annuler sa saisie juste après l'avoir envoyée.
 - **Classements** : le quizz se classe au score (ex aequo départagés à l'ordre
-  d'arrivée), la roue au nombre de défis **relevés**.
+  d'arrivée), la roue au nombre de défis **relevés**, chaque jeu au nombre de
+  **victoires** (à égalité, le moins de parties jouées passe devant), et
+  « Global » additionne tous les jeux. Les noms sont comparés sans casse ni
+  espaces en trop : « kevin » et « Kevin » cumulent.
 
 ## Éditer le contenu
 
 Tout ce qui se lit à l'écran est dans **`content.json`**, à la racine. Aucune
 autre modification n'est nécessaire pour ajouter une question ou un défi.
 
+**Les catégories du quizz.** Personne ne joue tout le vivier : chaque joueur
+reçoit un **tirage** de questions par catégorie, mélangé. Ajouter dix questions
+de culture gé ne rallonge donc pas le quizz, ça le diversifie — deux personnes
+assises côte à côte n'ont pas les mêmes.
+
+```json
+"categories": [
+  { "id": "perso", "label": "Titi & Djimi", "tirage": 4 },
+  { "id": "burger", "label": "Burger Quiz", "tirage": 8 },
+  { "id": "culture", "label": "Culture gé", "tirage": 0 },
+  { "id": "logique", "label": "Logique", "tirage": 4 }
+]
+```
+
+`label` est le nom lisible de la catégorie, utilisé dans les messages du
+serveur. Il ne s'affiche pas aux joueurs : la catégorie sert au tirage, pas au
+jeu. `tirage` est le nombre de questions piochées : la répartition ci-dessus
+fait un quizz de 16.
+
+`tirage: 0` met une catégorie de côté — ses questions restent dans le fichier
+mais ne sortent jamais. C'est la façon de remiser un paquet sans le supprimer,
+et de le faire revenir en changeant un seul chiffre.
+
+Une catégorie qui a moins de questions que son `tirage` ne bloque rien — elle en
+rend moins, et le serveur le signale au démarrage.
+
 **Une question de quizz :**
 
 ```json
 {
   "id": "anecdote-piscine",
+  "categorie": "perso",
   "type": "qcm",
   "texte": "Qui a fini dans la piscine tout habillé ?",
   "options": [{ "id": "a", "label": "Titi" }, { "id": "b", "label": "Djimi" }],
@@ -37,9 +72,39 @@ autre modification n'est nécessaire pour ajouter une question ou un défi.
 }
 ```
 
-`type` vaut `duo` (deux choix) ou `qcm` (quatre choix) — c'est purement
-décoratif, le fonctionnement est identique. `reponse` doit correspondre à l'`id`
-d'une option.
+`categorie` doit correspondre à l'`id` d'une catégorie déclarée plus haut : le
+serveur refuse de démarrer sinon. `reponse` doit correspondre à l'`id` d'une
+option.
+
+`type` vaut `duo` (deux choix), `qcm` (choix multiples) ou `selpoivre` (deux
+sujets et « Les deux ») — c'est purement décoratif, le fonctionnement est
+identique. Rien n'impose quatre propositions : trois marchent très bien.
+
+`chapeau` est facultatif : c'est la petite étiquette dorée au-dessus de
+l'énoncé. Réserve-la aux questions dont la règle du jeu ne va pas de soi
+(« Sel ou poivre », « Les nuggets ») — une question normale n'en a pas besoin.
+Garde-le court, il est en capitales espacées.
+
+**Une question « sel ou poivre » :** le duo est porté par les propositions, pas
+par l'énoncé — celui-ci n'est qu'une affirmation à ranger d'un côté ou de
+l'autre, et la troisième option est toujours « Les deux ».
+
+```json
+{
+  "id": "bq-sp-exemple",
+  "categorie": "burger",
+  "type": "selpoivre",
+  "chapeau": "Sel ou poivre",
+  "texte": "« Fait ses tournées sur une broche »",
+  "options": [
+    { "id": "sel", "label": "Pavarotti" },
+    { "id": "poivre", "label": "Un poulet rôti" },
+    { "id": "deux", "label": "Les deux" }
+  ],
+  "reponse": "poivre",
+  "explication": "Le poulet rôti. Personne ne ficelle Pavarotti avant une tournée."
+}
+```
 
 **Un segment de roue :**
 
@@ -51,6 +116,16 @@ d'une option.
 `type` vaut `defi` (compté dans le classement) ou `sauve` (rien à faire).
 `poids` règle la fréquence : un segment à `2` sort deux fois plus souvent qu'un
 segment à `1`.
+
+**Un jeu, pour « Rentre ton score » :**
+
+```json
+{ "id": "palet", "label": "Palet", "emoji": "🥏" }
+```
+
+Avec `"nomLibre": true`, le nom du jeu se tape au moment de la saisie (« Jeu de
+société » → « Uno », « Skyjo »…) et chaque nom a son propre classement.
+Renommer un `label` renomme le classement existant, sans perdre les parties.
 
 **Deux règles :**
 
@@ -68,9 +143,10 @@ Après édition : `git push` sur `main`, et c'est en ligne en ~2 minutes.
 uniquement dans le secret GitHub `ADMIN_CODE` — il n'est **pas** dans ce dépôt,
 qui est public.
 
-On y voit qui a joué, le détail des réponses, tous les tours de roue, et quatre
-boutons de remise à zéro (roue seule / quizz seul / joueurs / tout), chacun
-protégé par une confirmation à taper.
+On y voit qui a joué, le détail des réponses, tous les tours de roue, toutes
+les parties saisies (supprimables une par une, pour la victoire inventée à
+3 h du matin), et cinq boutons de remise à zéro (roue seule / quizz seul /
+scores des jeux / joueurs / tout), chacun protégé par une confirmation à taper.
 
 ## Développement
 
@@ -88,8 +164,8 @@ Tests : `npm test` (front) et `cd server && node --test "test/*.test.mjs"` (API)
 npm run qr        # écrit qr/*.svg et qr/*.png
 ```
 
-La page `/print` produit directement trois feuilles A4 prêtes à imprimer
-(roue, quizz, accueil) : `Cmd+P`, format A4.
+La page `/print` produit directement quatre feuilles A4 prêtes à imprimer
+(roue, quizz, scores, accueil) : `Cmd+P`, format A4.
 
 ## Déploiement
 

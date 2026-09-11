@@ -10,19 +10,46 @@ export function melanger(tableau, rng = Math.random) {
   return copie;
 }
 
+/** Les questions d'une catégorie, dans l'ordre du fichier. */
+export function vivier(contenu, categorieId) {
+  return contenu.quizz.questions.filter((q) => q.categorie === categorieId);
+}
+
 /**
+ * Chaque joueur reçoit son propre questionnaire : `tirage` questions piochées
+ * dans chaque catégorie, puis le tout remélangé. Deux personnes assises côte à
+ * côte n'ont donc pas les mêmes questions, mais elles en ont le même nombre et
+ * la même répartition — le classement reste comparable.
+ *
  * L'ordre est tiré une fois par joueur puis figé en base. Le recalculer à
  * chaque requête suffirait à casser la reprise : quelqu'un qui rafraîchit à la
  * question 12 retomberait sur un questionnaire réordonné, avec 11 réponses
  * rattachées à des questions qu'il n'a plus en face de lui.
  */
 export function tirerOrdre(contenu, rng = Math.random) {
+  const choisies = contenu.quizz.categories.flatMap((cat) =>
+    melanger(vivier(contenu, cat.id), rng).slice(0, cat.tirage),
+  );
   return {
-    questions: melanger(contenu.quizz.questions, rng).map((q) => ({
+    questions: melanger(choisies, rng).map((q) => ({
       id: q.id,
       options: melanger(q.options, rng).map((o) => o.id),
     })),
   };
+}
+
+/**
+ * Le dénominateur du score (« 13 / 16 »). Il ne dépend pas de la taille du
+ * vivier : ajouter dix questions de culture gé ne rallonge pas le quizz, ça le
+ * diversifie. Une catégorie trop maigre pour honorer son `tirage` rend
+ * simplement moins de questions — le quizz raccourcit, mais pour tout le monde
+ * pareil.
+ */
+export function tailleQuizz(contenu) {
+  return contenu.quizz.categories.reduce(
+    (somme, cat) => somme + Math.min(cat.tirage, vivier(contenu, cat.id).length),
+    0,
+  );
 }
 
 /**

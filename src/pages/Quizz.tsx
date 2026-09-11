@@ -84,7 +84,25 @@ export default function Quizz({ joueur }: { joueur: Joueur }) {
           style={{ width: `${((index + (retour ? 1 : 0)) / etat.questions.length) * 100}%` }}
         />
       </div>
-      <h2 className="shrink-0 pt-4 text-xl font-semibold leading-snug text-creme">{question.texte}</h2>
+      {/* L'étiquette annonce la manche façon ardoise de fast-food, et
+          uniquement quand elle explique la règle du jeu (« Sel ou poivre »,
+          « Les nuggets ») : sur un sel-ou-poivre, ce sont les propositions qui
+          portent le duo, l'énoncé n'est qu'une affirmation à ranger d'un côté
+          ou de l'autre. La catégorie, elle, ne s'affiche pas : elle sert au
+          tirage, pas au joueur. */}
+      <div className="shrink-0 pt-4">
+        {question.chapeau && (
+          <span
+            className="inline-block rounded-full border border-or/30 bg-black/25 px-2.5 py-0.5 text-[0.65rem] uppercase tracking-[0.2em] text-or/85"
+            style={{ fontFamily: 'var(--font-titre)' }}
+          >
+            {question.chapeau}
+          </span>
+        )}
+        <h2 className={`text-xl font-semibold leading-snug text-creme ${question.chapeau ? 'pt-2' : ''}`}>
+          {question.texte}
+        </h2>
+      </div>
 
       {/* Les propositions occupent la place disponible et se resserrent quand la
           correction apparaît : la bonne réponse et l'explication restent

@@ -7,6 +7,7 @@ import Impression from './pages/Impression'
 import Pseudo from './pages/Pseudo'
 import Quizz from './pages/Quizz'
 import Roue from './pages/Roue'
+import Scores from './pages/Scores'
 import { naviguer, useRoute } from './routeur'
 import { lireJoueur, type Joueur } from './storage'
 
@@ -17,7 +18,7 @@ export default function App() {
   // Les deux QR codes pointent droit sur un jeu. Quelqu'un qui scanne sans être
   // jamais venu passe par l'écran pseudo puis atterrit sur CE jeu, pas sur un
   // accueil qui lui redemanderait de choisir ce qu'il vient déjà de choisir.
-  const besoinIdentite = chemin === '/roue' || chemin === '/quizz'
+  const besoinIdentite = chemin === '/roue' || chemin === '/quizz' || chemin === '/scores'
   if (besoinIdentite && !joueur) {
     return <Pseudo destination={chemin} surCreation={setJoueur} />
   }
@@ -27,6 +28,8 @@ export default function App() {
       return <Roue joueur={joueur!} />
     case '/quizz':
       return <Quizz joueur={joueur!} />
+    case '/scores':
+      return <Scores joueur={joueur!} />
     case '/classements':
       return <Classements />
     case '/admin':

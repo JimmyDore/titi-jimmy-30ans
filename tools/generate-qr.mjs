@@ -21,6 +21,7 @@ const BASE = process.env.BASE_URL ?? 'https://30anstitietjimmy.jimmydore.fr';
 const CIBLES = [
   { nom: 'qr-roue', url: `${BASE}/roue` },
   { nom: 'qr-quizz', url: `${BASE}/quizz` },
+  { nom: 'qr-scores', url: `${BASE}/scores` },
   { nom: 'qr-accueil', url: BASE },
 ];
 

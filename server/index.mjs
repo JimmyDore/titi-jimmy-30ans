@@ -4,22 +4,28 @@ import { dirname } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import { chargerContenu } from './content.mjs';
-import { hachage, scorer, tirerOrdre, tirerSegment } from './quizz.mjs';
+import { hachage, scorer, tailleQuizz, tirerOrdre, tirerSegment } from './quizz.mjs';
 import {
   ajouterTour,
+  classementJeux,
   classementQuizz,
   classementRoue,
   creerJoueur,
   dumpAdmin,
+  enregistrerPartie,
   enregistrerReponse,
   joueurParPseudo,
   joueurParToken,
   marquerReleve,
   nettoyerPseudo,
+  nomsConnus,
+  nomsJeuxLibres,
+  normaliserPseudo,
   ouvrirDb,
   reinitialiser,
   reponsesDe,
   selQuizz,
+  supprimerPartie,
   terminerQuizz,
   toursDe,
 } from './db.mjs';
@@ -101,7 +107,7 @@ export function creerApp(db, contenu, deps = {}) {
         const score = scorer(contenu, reponsesDe(db, joueur.id));
         terminerQuizz(db, joueur.id, score);
         const frais = joueurParToken(db, joueur.token);
-        return json(res, 200, { score: frais.score, total: contenu.quizz.questions.length });
+        return json(res, 200, { score: frais.score, total: tailleQuizz(contenu) });
       }
 
       // --- Roue ------------------------------------------------------------
@@ -142,12 +148,38 @@ export function creerApp(db, contenu, deps = {}) {
         return json(res, 200, { tours: toursDe(db, joueur.id) });
       }
 
+      // --- Scores des jeux -------------------------------------------------
+      if (route[0] === 'jeux' && route.length === 1 && methode === 'GET') {
+        return json(res, 200, {
+          jeux: contenu.jeux.map((j) => ({ id: j.id, label: j.label, emoji: j.emoji, nomLibre: Boolean(j.nomLibre) })),
+          noms: nomsConnus(db),
+          nomsJeux: nomsJeuxLibres(db),
+        });
+      }
+
+      if (route[0] === 'parties' && route.length === 1 && methode === 'POST') {
+        const joueur = joueurParToken(db, bearer(req));
+        if (!joueur) return json(res, 401, { erreur: 'inconnu' });
+        const partie = lirePartie(contenu, await lireJson(req));
+        if (partie.erreur) return json(res, 400, { erreur: partie.erreur });
+        return json(res, 201, { id: enregistrerPartie(db, joueur.id, partie) });
+      }
+
+      if (route[0] === 'parties' && route.length === 2 && methode === 'DELETE') {
+        const joueur = joueurParToken(db, bearer(req));
+        if (!joueur) return json(res, 401, { erreur: 'inconnu' });
+        // Chacun n'annule que ses propres saisies : pour le reste, il y a l'admin.
+        if (!supprimerPartie(db, route[1], joueur.id)) return json(res, 404, { erreur: 'partie_inconnue' });
+        return json(res, 200, { ok: true });
+      }
+
       // --- Classements -----------------------------------------------------
       if (route[0] === 'classements' && methode === 'GET') {
         return json(res, 200, {
           quizz: classementQuizz(db),
           roue: classementRoue(db),
-          total: contenu.quizz.questions.length,
+          jeux: jeuxClasses(db, contenu),
+          total: tailleQuizz(contenu),
         });
       }
 
@@ -162,6 +194,10 @@ export function creerApp(db, contenu, deps = {}) {
         if (req.headers['x-admin-code'] !== codeAdmin) return json(res, 401, { erreur: 'code' });
         if (route[1] === 'donnees' && methode === 'GET') {
           return json(res, 200, { ...dumpAdmin(db), contenu });
+        }
+        if (route[1] === 'parties' && route.length === 3 && methode === 'DELETE') {
+          if (!supprimerPartie(db, route[2])) return json(res, 404, { erreur: 'partie_inconnue' });
+          return json(res, 200, { ok: true });
         }
         if (route[1] === 'reset' && methode === 'POST') {
           const { portee } = await lireJson(req);
@@ -196,6 +232,7 @@ function etatQuizz(db, contenu, sel, joueur) {
       return {
         id: q.id,
         type: q.type,
+        chapeau: q.chapeau ?? null,
         texte: q.texte,
         options: o.options.filter((id) => optionsParId.has(id)).map((id) => ({ id, label: optionsParId.get(id).label })),
         verif: hachage(q.id, q.reponse, sel),
@@ -207,8 +244,76 @@ function etatQuizz(db, contenu, sel, joueur) {
     reponses: reponsesDe(db, joueur.id).map((r) => ({ questionId: r.question_id, optionId: r.option_id })),
     fini: Boolean(joueur.quizz_fini_at),
     score: joueur.score,
-    total: contenu.quizz.questions.length,
+    total: questions.length,
   };
+}
+
+const MAX_PAR_CAMP = 10;
+const MAX_SCORE = 9999;
+
+/**
+ * Le formulaire parle du point de vue de celui qui tape (« mon équipe », « en
+ * face », « gagné ? ») ; la base, elle, range en gagnants et perdants, qui ne
+ * dépendent plus de qui a sorti son téléphone.
+ */
+function lirePartie(contenu, corps) {
+  const jeu = contenu.jeux.find((j) => j.id === corps.jeuId);
+  if (!jeu) return { erreur: 'jeu_inconnu' };
+  let jeuNom = jeu.label;
+  let jeuCle = jeu.id;
+  if (jeu.nomLibre) {
+    jeuNom = nettoyerPseudo(corps.nomJeu);
+    if (jeuNom.length < 2) return { erreur: 'nom_jeu_court' };
+    jeuCle = `${jeu.id}:${normaliserPseudo(jeuNom)}`;
+  }
+
+  const camp = (noms) => (Array.isArray(noms) ? noms.map(nettoyerPseudo) : []);
+  const equipe = camp(corps.equipe);
+  const adversaires = camp(corps.adversaires);
+  if (equipe.length === 0 || adversaires.length === 0) return { erreur: 'camp_vide' };
+  if (equipe.length > MAX_PAR_CAMP || adversaires.length > MAX_PAR_CAMP) return { erreur: 'trop_de_joueurs' };
+  const tous = [...equipe, ...adversaires];
+  if (tous.some((nom) => nom.length < 2)) return { erreur: 'nom_court' };
+  // La même personne des deux côtés, c'est une faute de frappe, pas une partie.
+  if (new Set(tous.map(normaliserPseudo)).size !== tous.length) return { erreur: 'nom_en_double' };
+
+  if (typeof corps.gagne !== 'boolean') return { erreur: 'resultat_manquant' };
+  const scoreEquipe = lireScore(corps.scoreEquipe);
+  const scoreAdversaires = lireScore(corps.scoreAdversaires);
+  if (scoreEquipe === undefined || scoreAdversaires === undefined) return { erreur: 'score_invalide' };
+  if ((scoreEquipe === null) !== (scoreAdversaires === null)) return { erreur: 'score_incomplet' };
+
+  return {
+    jeuId: jeu.id,
+    jeuNom,
+    jeuCle,
+    gagnants: corps.gagne ? equipe : adversaires,
+    perdants: corps.gagne ? adversaires : equipe,
+    scoreGagnants: corps.gagne ? scoreEquipe : scoreAdversaires,
+    scorePerdants: corps.gagne ? scoreAdversaires : scoreEquipe,
+  };
+}
+
+/** `null` : pas de score, un Loup-garou ne se compte pas. `undefined` : score invalide. */
+function lireScore(valeur) {
+  if (valeur === null || valeur === undefined || valeur === '') return null;
+  return Number.isInteger(valeur) && valeur >= 0 && valeur <= MAX_SCORE ? valeur : undefined;
+}
+
+/**
+ * Emoji et libellé sont relus dans content.json à chaque affichage : renommer
+ * un jeu renomme son classement. Les jeux gardent l'ordre du fichier, pour que
+ * les pastilles ne changent pas de place à chaque rafraîchissement.
+ */
+function jeuxClasses(db, contenu) {
+  const parId = new Map(contenu.jeux.map((j, rang) => [j.id, { ...j, rang }]));
+  const rang = (c) => parId.get(c.jeuId)?.rang ?? contenu.jeux.length;
+  return classementJeux(db)
+    .map((c) => {
+      const jeu = parId.get(c.jeuId);
+      return { ...c, emoji: jeu?.emoji ?? '🎲', nom: jeu && !jeu.nomLibre ? jeu.label : c.nom };
+    })
+    .sort((a, b) => rang(a) - rang(b));
 }
 
 function bearer(req) {

@@ -1,6 +1,16 @@
 {
   "_lisezmoi": "LE fichier a editer. Voir la section « Editer le contenu » du README. Ne JAMAIS reutiliser un id deja servi : les parties en cours sont rattachees aux ids.",
 
+  "jeux": [
+    { "id": "palet", "label": "Palet", "emoji": "🥏" },
+    { "id": "molkky", "label": "Mölkky", "emoji": "🪵" },
+    { "id": "cornhole", "label": "Cornhole", "emoji": "🌽" },
+    { "id": "grenouille", "label": "Grenouille", "emoji": "🐸" },
+    { "id": "palet-corde", "label": "Palet à la corde", "emoji": "🪢" },
+    { "id": "beer-pong", "label": "Beer pong", "emoji": "🍺" },
+    { "id": "societe", "label": "Jeu de société", "emoji": "🎲", "nomLibre": true }
+  ],
+
   "roue": {
     "segments": [
       { "id": "piment-1", "type": "defi", "label": "Piment", "emoji": "🌶️", "consigne": "Croque le piment le plus fort de la table. Entier. Pas d'eau pendant 30 secondes.", "poids": 1 },
@@ -15,17 +25,26 @@
   },
 
   "quizz": {
+    "categories": [
+      { "id": "perso", "label": "Titi & Djimi", "tirage": 4 },
+      { "id": "burger", "label": "Burger Quiz", "tirage": 8 },
+      { "id": "culture", "label": "Culture gé", "tirage": 0 },
+      { "id": "logique", "label": "Logique", "tirage": 4 }
+    ],
+
     "questions": [
       {
         "id": "anecdote-maison",
+        "categorie": "perso",
         "type": "duo",
         "texte": "Qui était trop déglingué pour rentrer chez lui et s'est endormi devant la maison ?",
         "options": [{ "id": "titi", "label": "Titi" }, { "id": "djimi", "label": "Djimi" }],
         "reponse": "titi",
-        "explication": "Titi. Le paillasson était plus accueillant que la serrure."
+        "explication": "Le bitume était plus accueillant que la serrure."
       },
       {
         "id": "anecdote-voiture",
+        "categorie": "perso",
         "type": "duo",
         "texte": "Qui était trop déglingué pour rentrer chez lui et s'est endormi dans sa voiture ?",
         "options": [{ "id": "titi", "label": "Titi" }, { "id": "djimi", "label": "Djimi" }],
@@ -33,15 +52,518 @@
         "explication": "Djimi. Une voiture, ça a des sièges inclinables, c'est déjà un lit."
       },
       {
-        "id": "anecdote-impots",
+        "id": "perso-permis",
+        "categorie": "perso",
         "type": "duo",
-        "texte": "Qui a pissé dans la boîte aux lettres des impôts ?",
+        "texte": "Qui a eu son permis le plus facilement ?",
         "options": [{ "id": "titi", "label": "Titi" }, { "id": "djimi", "label": "Djimi" }],
-        "reponse": "djimi",
-        "explication": "Djimi. Une contribution volontaire, en nature."
+        "reponse": "titi",
+        "explication": "Titi. Djimi l'a eu aussi, hein. Juste un peu plus tard. Et un peu plus cher."
       },
       {
+        "id": "perso-fracture",
+        "categorie": "perso",
+        "type": "duo",
+        "texte": "Qui a le plus d'os cassés au compteur ?",
+        "options": [{ "id": "titi", "label": "Titi" }, { "id": "djimi", "label": "Djimi" }],
+        "reponse": "djimi",
+        "explication": "Djimi, avec une triple fracture du pouce. Un pouce. Triple."
+      },
+      {
+        "id": "perso-chant",
+        "categorie": "perso",
+        "type": "duo",
+        "piege": true,
+        "texte": "Qui chante le plus faux ?",
+        "options": [
+          { "id": "titi", "label": "Titi" },
+          { "id": "djimi", "label": "Djimi" }
+        ],
+        "reponse": "personne",
+        "explication": "Perdu. Et tout le monde perd : ils chantent tous les deux comme des dieux."
+      },
+      {
+        "id": "perso-vomi",
+        "categorie": "perso",
+        "type": "duo",
+        "texte": "Qui a vomi dans l'endroit le plus mal choisi ?",
+        "options": [{ "id": "titi", "label": "Titi" }, { "id": "djimi", "label": "Djimi" }],
+        "reponse": "djimi",
+        "explication": "Djimi, dans la chaussure d'un pote. Le pote n'avait rien demandé."
+      },
+      {
+        "id": "perso-rencontre",
+        "categorie": "perso",
+        "type": "qcm",
+        "texte": "En quelle année Titi et Djimi se sont-ils rencontrés ?",
+        "options": [
+          { "id": "a", "label": "2002" },
+          { "id": "b", "label": "2004" },
+          { "id": "c", "label": "2006" },
+          { "id": "d", "label": "2009" }
+        ],
+        "reponse": "c",
+        "explication": "20 ans d'amour conjugal."
+      },
+      {
+        "id": "perso-retard",
+        "categorie": "perso",
+        "type": "duo",
+        "texte": "Qui arrive systématiquement en retard ?",
+        "options": [{ "id": "titi", "label": "Titi" }, { "id": "djimi", "label": "Djimi" }],
+        "reponse": "djimi",
+        "explication": "Pas de débat…"
+      },
+      {
+        "id": "perso-ronfle",
+        "categorie": "perso",
+        "type": "duo",
+        "texte": "Qui ronfle le plus fort ?",
+        "options": [{ "id": "titi", "label": "Titi" }, { "id": "djimi", "label": "Djimi" }],
+        "reponse": "djimi",
+        "explication": "Djimi, mais aucune concurrence avec son frère…"
+      },
+      {
+        "id": "perso-pates",
+        "categorie": "perso",
+        "type": "duo",
+        "texte": "Qui est infoutu de faire cuire autre chose que des pâtes ?",
+        "options": [{ "id": "titi", "label": "Titi" }, { "id": "djimi", "label": "Djimi" }],
+        "reponse": "titi",
+        "explication": "La communauté scientifique le désigne pâtovore."
+      },
+      {
+        "id": "perso-rangement",
+        "categorie": "perso",
+        "type": "duo",
+        "texte": "Qui range son appartement une fois par an, grand maximum ?",
+        "options": [{ "id": "titi", "label": "Titi" }, { "id": "djimi", "label": "Djimi" }],
+        "reponse": "titi",
+        "explication": "Titi — qui plaide non coupable : il dit être débordé par le bordel de Nanou."
+      },
+      {
+        "id": "perso-assiette",
+        "categorie": "perso",
+        "type": "qcm",
+        "texte": "Qui pique la bouffe dans l'assiette des autres ?",
+        "options": [
+          { "id": "titi", "label": "Titi" },
+          { "id": "djimi", "label": "Djimi" },
+          { "id": "julien", "label": "Julien" }
+        ],
+        "reponse": "julien",
+        "explication": "Julien. Personne n'a souhaité commenter davantage…"
+      },
+
+      {
+        "id": "bq-sp-pavarotti",
+        "categorie": "burger",
+        "type": "selpoivre",
+        "chapeau": "Sel ou poivre",
+        "texte": "« Fait ses tournées sur une broche »",
+        "options": [
+          { "id": "sel", "label": "Pavarotti" },
+          { "id": "poivre", "label": "Un poulet rôti" },
+          { "id": "deux", "label": "Les deux" }
+        ],
+        "reponse": "poivre",
+        "explication": "Le poulet rôti. Pavarotti fait ses tournées en jet, et à aucun moment on ne le badigeonne."
+      },
+      {
+        "id": "bq-sp-pavarotti-2",
+        "categorie": "burger",
+        "type": "selpoivre",
+        "chapeau": "Sel ou poivre",
+        "texte": "« Il n'y a aucune raison de le ficeler »",
+        "options": [
+          { "id": "sel", "label": "Pavarotti" },
+          { "id": "poivre", "label": "Un poulet rôti" },
+          { "id": "deux", "label": "Les deux" }
+        ],
+        "reponse": "sel",
+        "explication": "Pavarotti. Le poulet, lui, on le ficelle — sinon les cuisses partent dans tous les sens."
+      },
+      {
+        "id": "bq-sp-pamela",
+        "categorie": "burger",
+        "type": "selpoivre",
+        "chapeau": "Sel ou poivre",
+        "texte": "« N'a pas que des pièces d'origine »",
+        "options": [
+          { "id": "sel", "label": "Pamela Anderson" },
+          { "id": "poivre", "label": "Une voiture d'occasion" },
+          { "id": "deux", "label": "Les deux" }
+        ],
+        "reponse": "deux",
+        "explication": "Les deux. Et dans les deux cas, on te jurera que si."
+      },
+      {
+        "id": "bq-sp-pamela-2",
+        "categorie": "burger",
+        "type": "selpoivre",
+        "chapeau": "Sel ou poivre",
+        "texte": "« Est cotée à l'Argus »",
+        "options": [
+          { "id": "sel", "label": "Pamela Anderson" },
+          { "id": "poivre", "label": "Une voiture d'occasion" },
+          { "id": "deux", "label": "Les deux" }
+        ],
+        "reponse": "poivre",
+        "explication": "La voiture d'occasion. Pamela Anderson est cotée, mais pas à l'Argus."
+      },
+      {
+        "id": "bq-sp-pet",
+        "categorie": "burger",
+        "type": "selpoivre",
+        "chapeau": "Sel ou poivre",
+        "texte": "« Arrive souvent après les pois chiches »",
+        "options": [
+          { "id": "sel", "label": "Un pet" },
+          { "id": "poivre", "label": "La paix" },
+          { "id": "deux", "label": "Les deux" }
+        ],
+        "reponse": "sel",
+        "explication": "Un pet. La paix après les pois chiches, ça n'est jamais arrivé à personne."
+      },
+      {
+        "id": "bq-sp-pet-2",
+        "categorie": "burger",
+        "type": "selpoivre",
+        "chapeau": "Sel ou poivre",
+        "texte": "« Il faut se serrer la main avant »",
+        "options": [
+          { "id": "sel", "label": "Un pet" },
+          { "id": "poivre", "label": "La paix" },
+          { "id": "deux", "label": "Les deux" }
+        ],
+        "reponse": "poivre",
+        "explication": "La paix. Pour l'autre, se serrer la main avant est même vivement déconseillé."
+      },
+      {
+        "id": "bq-sp-pikachu",
+        "categorie": "burger",
+        "type": "selpoivre",
+        "chapeau": "Sel ou poivre",
+        "texte": "« Ne sait dire que son nom »",
+        "options": [
+          { "id": "sel", "label": "Pikachu" },
+          { "id": "poivre", "label": "Le Yéti" },
+          { "id": "deux", "label": "Les deux" }
+        ],
+        "reponse": "sel",
+        "explication": "Pikachu. Le Yéti, lui, ne dit rien du tout — c'est même tout le problème."
+      },
+      {
+        "id": "bq-sp-pikachu-2",
+        "categorie": "burger",
+        "type": "selpoivre",
+        "chapeau": "Sel ou poivre",
+        "texte": "« Est poilu »",
+        "options": [
+          { "id": "sel", "label": "Pikachu" },
+          { "id": "poivre", "label": "Le Yéti" },
+          { "id": "deux", "label": "Les deux" }
+        ],
+        "reponse": "deux",
+        "explication": "Les deux. L'un t'attendrit, l'autre te traumatise, mais c'est la même matière."
+      },
+      {
+        "id": "bq-sp-ouioui",
+        "categorie": "burger",
+        "type": "selpoivre",
+        "chapeau": "Sel ou poivre",
+        "texte": "« Te fait perdre au jeu du ni oui ni non »",
+        "options": [
+          { "id": "sel", "label": "Sissi" },
+          { "id": "poivre", "label": "Oui-Oui" },
+          { "id": "deux", "label": "Les deux" }
+        ],
+        "reponse": "poivre",
+        "explication": "Oui-Oui. Deux fois plus vite que n'importe qui."
+      },
+      {
+        "id": "bq-sp-ouioui-2",
+        "categorie": "burger",
+        "type": "selpoivre",
+        "chapeau": "Sel ou poivre",
+        "texte": "« A vraiment existé »",
+        "options": [
+          { "id": "sel", "label": "Sissi" },
+          { "id": "poivre", "label": "Oui-Oui" },
+          { "id": "deux", "label": "Les deux" }
+        ],
+        "reponse": "sel",
+        "explication": "Sissi. Impératrice d'Autriche, morte assassinée à Genève — très loin du monde merveilleux d'Oui-Oui."
+      },
+      {
+        "id": "bq-sp-atchoum",
+        "categorie": "burger",
+        "type": "selpoivre",
+        "chapeau": "Sel ou poivre",
+        "texte": "« Met l'autre KO à la bagarre »",
+        "options": [
+          { "id": "sel", "label": "Atchoum" },
+          { "id": "poivre", "label": "Brahim Asloum" },
+          { "id": "deux", "label": "Les deux" }
+        ],
+        "reponse": "poivre",
+        "explication": "Brahim Asloum, champion olympique de boxe. Atchoum pèse douze kilos et éternue avant de frapper."
+      },
+      {
+        "id": "bq-sp-atchoum-2",
+        "categorie": "burger",
+        "type": "selpoivre",
+        "chapeau": "Sel ou poivre",
+        "texte": "« Est petit »",
+        "options": [
+          { "id": "sel", "label": "Atchoum" },
+          { "id": "poivre", "label": "Brahim Asloum" },
+          { "id": "deux", "label": "Les deux" }
+        ],
+        "reponse": "deux",
+        "explication": "Les deux. Sauf qu'un seul des deux en a fait une catégorie de poids."
+      },
+      {
+        "id": "bq-sp-leboeuf",
+        "categorie": "burger",
+        "type": "selpoivre",
+        "chapeau": "Sel ou poivre",
+        "texte": "« A une fermeture éclair sur la gueule »",
+        "options": [
+          { "id": "sel", "label": "Frank Leboeuf" },
+          { "id": "poivre", "label": "Frankenstein" },
+          { "id": "deux", "label": "Les deux" }
+        ],
+        "reponse": "poivre",
+        "explication": "Frankenstein. Frank Leboeuf a juste des commentaires à la mi-temps."
+      },
+      {
+        "id": "bq-sp-leboeuf-2",
+        "categorie": "burger",
+        "type": "selpoivre",
+        "chapeau": "Sel ou poivre",
+        "texte": "« Est champion du monde »",
+        "options": [
+          { "id": "sel", "label": "Frank Leboeuf" },
+          { "id": "poivre", "label": "Frankenstein" },
+          { "id": "deux", "label": "Les deux" }
+        ],
+        "reponse": "sel",
+        "explication": "Frank Leboeuf, 1998. Frankenstein n'a même pas été sélectionné."
+      },
+      {
+        "id": "bq-sp-clou",
+        "categorie": "burger",
+        "type": "selpoivre",
+        "chapeau": "Sel ou poivre",
+        "texte": "« Il en existe sans tête »",
+        "options": [
+          { "id": "sel", "label": "Un clou" },
+          { "id": "poivre", "label": "Nicolas Sarkozy" },
+          { "id": "deux", "label": "Les deux" }
+        ],
+        "reponse": "sel",
+        "explication": "Le clou. Il en existe même des torsadés, mais là on s'éloigne."
+      },
+      {
+        "id": "bq-sp-clou-2",
+        "categorie": "burger",
+        "type": "selpoivre",
+        "chapeau": "Sel ou poivre",
+        "texte": "« On peut taper dessus »",
+        "options": [
+          { "id": "sel", "label": "Un clou" },
+          { "id": "poivre", "label": "Nicolas Sarkozy" },
+          { "id": "deux", "label": "Les deux" }
+        ],
+        "reponse": "deux",
+        "explication": "Les deux. Dans un seul des deux cas c'est le but de l'objet."
+      },
+
+      {
+        "id": "bq-ng-rer",
+        "categorie": "burger",
+        "type": "qcm",
+        "chapeau": "Les nuggets",
+        "texte": "Le RER a failli porter un tout autre nom, abandonné juste avant l'inauguration. Lequel ?",
+        "options": [
+          { "id": "a", "label": "Z.U.T." },
+          { "id": "b", "label": "C.R.O.T.T.E." },
+          { "id": "c", "label": "M.E.R.D.E." },
+          { "id": "d", "label": "E.N.F.O.I.R.É." }
+        ],
+        "reponse": "c",
+        "explication": "M.E.R.D.E. : Métro Express Régional Défense-Étoile. C'est le peintre de la campagne d'affichage qui a tiré la sonnette d'alarme. On lui doit beaucoup."
+      },
+      {
+        "id": "bq-ng-duralex",
+        "categorie": "burger",
+        "type": "qcm",
+        "chapeau": "Les nuggets",
+        "texte": "Le chiffre au fond des verres de la cantine, ça veut dire quoi ?",
+        "options": [
+          { "id": "a", "label": "Ton âge" },
+          { "id": "b", "label": "Le numéro de la machine qui a fabriqué le verre" },
+          { "id": "c", "label": "L'année de fabrication" },
+          { "id": "d", "label": "Le nombre de passages au lave-vaisselle" }
+        ],
+        "reponse": "b",
+        "explication": "Le numéro du moule, pour retrouver la machine fautive si le verre a un défaut. Toute une génération a cru que c'était son âge."
+      },
+      {
+        "id": "bq-ng-delon",
+        "categorie": "burger",
+        "type": "qcm",
+        "chapeau": "Les nuggets",
+        "texte": "Avant le cinéma, Alain Delon a passé un CAP de…",
+        "options": [
+          { "id": "a", "label": "Charcutier" },
+          { "id": "b", "label": "Fleuriste" },
+          { "id": "c", "label": "Plombier" },
+          { "id": "d", "label": "Coiffeur" }
+        ],
+        "reponse": "a",
+        "explication": "Charcutier. École terminée à 14 ans, le boudin avant Le Samouraï."
+      },
+      {
+        "id": "bq-ng-chaplin",
+        "categorie": "burger",
+        "type": "qcm",
+        "chapeau": "Les nuggets",
+        "texte": "Deux mois après son enterrement, qu'est-il arrivé au corps de Charlie Chaplin ?",
+        "options": [
+          { "id": "a", "label": "Il a été volé et réclamé contre rançon" },
+          { "id": "b", "label": "Il a été enterré une deuxième fois par erreur" },
+          { "id": "c", "label": "Il a été exposé trois jours à Hollywood" },
+          { "id": "d", "label": "Il a été incinéré à la demande de sa veuve" }
+        ],
+        "reponse": "a",
+        "explication": "Volé en 1978, planqué dans un champ de maïs, monnayé 600 000 francs suisses. Retrouvé, il a été remis sous deux mètres de béton."
+      },
+      {
+        "id": "bq-ng-uweboll",
+        "categorie": "burger",
+        "type": "qcm",
+        "chapeau": "Les nuggets",
+        "texte": "Uwe Boll, réalisateur massacré par la critique, a réglé le problème comment ?",
+        "options": [
+          { "id": "a", "label": "Il a défié ses pires critiques sur un ring de boxe" },
+          { "id": "b", "label": "Il a racheté le site qui le démolissait" },
+          { "id": "c", "label": "Il les a tous engagés comme figurants" },
+          { "id": "d", "label": "Il a arrêté le cinéma pendant dix ans" }
+        ],
+        "reponse": "a",
+        "explication": "Sur un ring, à Vancouver, en 2006. Il les a tous mis KO. Ses films sont restés nuls."
+      },
+      {
+        "id": "bq-ng-alf",
+        "categorie": "burger",
+        "type": "qcm",
+        "chapeau": "Les nuggets",
+        "texte": "ALF s'appelle ALF parce que…",
+        "options": [
+          { "id": "a", "label": "Ça veut dire « Alien Life Form »" },
+          { "id": "b", "label": "C'est le bruit qu'il fait en mangeant un chat" },
+          { "id": "c", "label": "C'est le prénom de son grand-père sur Melmac" },
+          { "id": "d", "label": "Il est moitié tapir, moitié castor" }
+        ],
+        "reponse": "a",
+        "explication": "« Alien Life Form ». C'est le nom que lui donnent les humains dans la série, faute de mieux."
+      },
+      {
+        "id": "bq-ng-flamant",
+        "categorie": "burger",
+        "type": "qcm",
+        "chapeau": "Les nuggets",
+        "texte": "Pourquoi les flamants roses sont-ils roses ?",
+        "options": [
+          { "id": "a", "label": "À cause de ce qu'ils mangent" },
+          { "id": "b", "label": "Parce qu'ils dorment debout, le sang descend" },
+          { "id": "c", "label": "C'est le soleil qui les décolore" },
+          { "id": "d", "label": "Ils naissent roses, comme les cochons" }
+        ],
+        "reponse": "a",
+        "explication": "Les caroténoïdes des crevettes et des algues qu'ils filtrent. En captivité, mal nourris, ils redeviennent blancs."
+      },
+      {
+        "id": "bq-ng-parapluie",
+        "categorie": "burger",
+        "type": "qcm",
+        "chapeau": "Les nuggets",
+        "texte": "C'est quoi, un « parapluie bulgare » ?",
+        "options": [
+          { "id": "a", "label": "Une arme qui injecte du poison" },
+          { "id": "b", "label": "Un parapluie qui s'ouvre à l'envers" },
+          { "id": "c", "label": "Une figure de patinage artistique" },
+          { "id": "d", "label": "Un cocktail à base de rakia" }
+        ],
+        "reponse": "a",
+        "explication": "Une arme. En 1978 à Londres, le dissident Gueorgui Markov a été tué d'une bille de ricine tirée par la pointe d'un parapluie."
+      },
+      {
+        "id": "bq-ng-hippo",
+        "categorie": "burger",
+        "type": "qcm",
+        "chapeau": "Les nuggets",
+        "texte": "Comment l'hippopotame fait-il popo ?",
+        "options": [
+          { "id": "a", "label": "En faisant tourner sa queue comme une hélice" },
+          { "id": "b", "label": "En apnée, toujours sous l'eau" },
+          { "id": "c", "label": "Une seule fois par semaine" },
+          { "id": "d", "label": "Toujours au même endroit, en tas" }
+        ],
+        "reponse": "a",
+        "explication": "Il fait tourner sa queue comme une hélice pour tout pulvériser autour de lui. C'est comme ça qu'il marque son territoire."
+      },
+      {
+        "id": "bq-ng-keaton",
+        "categorie": "burger",
+        "type": "qcm",
+        "chapeau": "Les nuggets",
+        "texte": "Michael Keaton a dû prendre un nom de scène parce qu'il s'appelait déjà…",
+        "options": [
+          { "id": "a", "label": "Michael Douglas" },
+          { "id": "b", "label": "Michael Caine" },
+          { "id": "c", "label": "Michael Jackson" },
+          { "id": "d", "label": "Michael Bay" }
+        ],
+        "reponse": "a",
+        "explication": "Michael Douglas — le vrai. Le syndicat des acteurs en avait déjà un, il a pioché « Keaton » en hommage à Buster."
+      },
+      {
+        "id": "bq-ng-mathusalem",
+        "categorie": "burger",
+        "type": "qcm",
+        "chapeau": "Les nuggets",
+        "texte": "À quel âge est mort ce bon vieux Mathusalem ?",
+        "options": [
+          { "id": "a", "label": "969 ans" },
+          { "id": "b", "label": "120 ans" },
+          { "id": "c", "label": "777 ans" },
+          { "id": "d", "label": "1 042 ans" }
+        ],
+        "reponse": "a",
+        "explication": "969 ans, dit la Genèse. Il est mort l'année du Déluge, ce qui n'aide pas à mourir de vieillesse."
+      },
+      {
+        "id": "bq-ng-superman",
+        "categorie": "burger",
+        "type": "qcm",
+        "chapeau": "Les nuggets",
+        "texte": "Avec quel accessoire Superman cache-t-il sa véritable identité ?",
+        "options": [
+          { "id": "a", "label": "Une paire de lunettes" },
+          { "id": "b", "label": "Une mèche de cheveux" },
+          { "id": "c", "label": "Des lentilles de contact" },
+          { "id": "d", "label": "Une cicatrice en forme d'éclair" }
+        ],
+        "reponse": "a",
+        "explication": "Une paire de lunettes. Des millions de gens, dont sa collègue de bureau, tombent dans le panneau depuis 1938."
+      },
+
+      {
         "id": "cg-guerre",
+        "categorie": "culture",
         "type": "qcm",
         "texte": "Combien de temps a duré la guerre la plus courte de l'histoire (Royaume-Uni contre Zanzibar, 1896) ?",
         "options": [
@@ -55,6 +577,7 @@
       },
       {
         "id": "cg-gorille",
+        "categorie": "culture",
         "type": "qcm",
         "texte": "Quel est le nom scientifique du gorille des plaines de l'Ouest ?",
         "options": [
@@ -68,6 +591,7 @@
       },
       {
         "id": "cg-pieuvre",
+        "categorie": "culture",
         "type": "qcm",
         "texte": "Combien de cœurs a une pieuvre ?",
         "options": [
@@ -81,6 +605,7 @@
       },
       {
         "id": "cg-fuseaux",
+        "categorie": "culture",
         "type": "qcm",
         "texte": "Quel pays compte le plus de fuseaux horaires au monde ?",
         "options": [
@@ -94,6 +619,7 @@
       },
       {
         "id": "cg-venus",
+        "categorie": "culture",
         "type": "qcm",
         "texte": "Sur Vénus, qu'est-ce qui dure le plus longtemps ?",
         "options": [
@@ -107,6 +633,7 @@
       },
       {
         "id": "cg-cafard",
+        "categorie": "culture",
         "type": "qcm",
         "texte": "Combien de temps un cafard peut-il survivre sans sa tête ?",
         "options": [
@@ -120,6 +647,7 @@
       },
       {
         "id": "cg-ebay",
+        "categorie": "culture",
         "type": "qcm",
         "texte": "Quel a été le tout premier objet vendu sur eBay ?",
         "options": [
@@ -133,6 +661,7 @@
       },
       {
         "id": "cg-hoquet",
+        "categorie": "culture",
         "type": "qcm",
         "texte": "Quel est le record du monde de la plus longue crise de hoquet ?",
         "options": [
@@ -146,6 +675,7 @@
       },
       {
         "id": "cg-cochon-inde",
+        "categorie": "culture",
         "type": "qcm",
         "texte": "En Suisse, qu'est-ce qui est interdit par la loi ?",
         "options": [
@@ -159,6 +689,7 @@
       },
       {
         "id": "cg-banane",
+        "categorie": "culture",
         "type": "qcm",
         "texte": "D'un point de vue botanique, laquelle de ces affirmations est vraie ?",
         "options": [
@@ -172,6 +703,7 @@
       },
       {
         "id": "cg-miel",
+        "categorie": "culture",
         "type": "qcm",
         "texte": "Combien de temps se conserve un pot de miel bien fermé ?",
         "options": [
@@ -182,6 +714,315 @@
         ],
         "reponse": "d",
         "explication": "Indéfiniment. On a retrouvé du miel de 3 000 ans dans des tombes égyptiennes, encore comestible."
+      },
+      {
+        "id": "cg-desert",
+        "categorie": "culture",
+        "type": "qcm",
+        "texte": "Quel est le plus grand désert du monde ?",
+        "options": [
+          { "id": "a", "label": "L'Antarctique" },
+          { "id": "b", "label": "Le Sahara" },
+          { "id": "c", "label": "Le désert de Gobi" },
+          { "id": "d", "label": "Le désert d'Arabie" }
+        ],
+        "reponse": "a",
+        "explication": "L'Antarctique. Un désert se définit par ses précipitations, pas par sa température — et là-bas, il ne tombe presque rien."
+      },
+      {
+        "id": "cg-cent-ans",
+        "categorie": "culture",
+        "type": "qcm",
+        "texte": "Combien de temps a duré la guerre de Cent Ans ?",
+        "options": [
+          { "id": "a", "label": "100 ans, évidemment" },
+          { "id": "b", "label": "116 ans" },
+          { "id": "c", "label": "81 ans" },
+          { "id": "d", "label": "134 ans" }
+        ],
+        "reponse": "b",
+        "explication": "116 ans, de 1337 à 1453. Personne n'a pensé à renommer."
+      },
+      {
+        "id": "cg-chauve-souris",
+        "categorie": "culture",
+        "type": "qcm",
+        "texte": "Quel est le seul mammifère capable de voler vraiment ?",
+        "options": [
+          { "id": "a", "label": "La chauve-souris" },
+          { "id": "b", "label": "L'écureuil volant" },
+          { "id": "c", "label": "Le colibri" },
+          { "id": "d", "label": "Le poisson volant" }
+        ],
+        "reponse": "a",
+        "explication": "La chauve-souris. L'écureuil volant ne vole pas, il tombe avec style."
+      },
+      {
+        "id": "cg-canberra",
+        "categorie": "culture",
+        "type": "qcm",
+        "texte": "Quelle est la capitale de l'Australie ?",
+        "options": [
+          { "id": "a", "label": "Sydney" },
+          { "id": "b", "label": "Melbourne" },
+          { "id": "c", "label": "Canberra" },
+          { "id": "d", "label": "Brisbane" }
+        ],
+        "reponse": "c",
+        "explication": "Canberra. Une ville construite exprès au milieu, parce que Sydney et Melbourne n'arrivaient pas à se mettre d'accord."
+      },
+      {
+        "id": "cg-tour-eiffel",
+        "categorie": "culture",
+        "type": "qcm",
+        "texte": "Qu'arrive-t-il à la tour Eiffel quand il fait très chaud ?",
+        "options": [
+          { "id": "a", "label": "Elle grandit d'une quinzaine de centimètres" },
+          { "id": "b", "label": "Elle rétrécit d'un mètre" },
+          { "id": "c", "label": "Elle change de couleur" },
+          { "id": "d", "label": "Absolument rien" }
+        ],
+        "reponse": "a",
+        "explication": "Elle grandit : le fer se dilate. Et elle penche légèrement, du côté opposé au soleil."
+      },
+      {
+        "id": "cg-os",
+        "categorie": "culture",
+        "type": "qcm",
+        "texte": "Un bébé naît avec environ 300 os. Combien en reste-t-il à l'âge adulte ?",
+        "options": [
+          { "id": "a", "label": "206" },
+          { "id": "b", "label": "300, ils grandissent avec lui" },
+          { "id": "c", "label": "412" },
+          { "id": "d", "label": "150" }
+        ],
+        "reponse": "a",
+        "explication": "206. Une partie fusionne en grandissant — le crâne, notamment, qui commence en plusieurs morceaux."
+      },
+      {
+        "id": "cg-koala",
+        "categorie": "culture",
+        "type": "qcm",
+        "texte": "Combien d'heures par jour dort un koala ?",
+        "options": [
+          { "id": "a", "label": "Environ 20 heures" },
+          { "id": "b", "label": "Environ 8 heures" },
+          { "id": "c", "label": "Environ 12 heures" },
+          { "id": "d", "label": "Il ne dort jamais complètement" }
+        ],
+        "reponse": "a",
+        "explication": "Une vingtaine d'heures. Son seul aliment, l'eucalyptus, est si pauvre en énergie qu'il passe le reste du temps à digérer."
+      },
+      {
+        "id": "cg-ornithorynque",
+        "categorie": "culture",
+        "type": "qcm",
+        "texte": "Qu'est-ce qui rend l'ornithorynque particulièrement improbable ?",
+        "options": [
+          { "id": "a", "label": "C'est un mammifère qui pond des œufs" },
+          { "id": "b", "label": "Il change de sexe une fois par an" },
+          { "id": "c", "label": "Il n'a pas d'estomac… ni de bouche" },
+          { "id": "d", "label": "Il vit exactement 7 ans, jamais plus" }
+        ],
+        "reponse": "a",
+        "explication": "Il pond des œufs, il allaite, il détecte les champs électriques et le mâle est venimeux. Les premiers naturalistes ont crié au canular."
+      },
+      {
+        "id": "cg-groenland",
+        "categorie": "culture",
+        "type": "qcm",
+        "texte": "Le Groenland est un territoire de quel pays ?",
+        "options": [
+          { "id": "a", "label": "Le Danemark" },
+          { "id": "b", "label": "Le Canada" },
+          { "id": "c", "label": "La Norvège" },
+          { "id": "d", "label": "L'Islande" }
+        ],
+        "reponse": "a",
+        "explication": "Le Danemark, dont il est un territoire autonome. La plus grande île du monde appartient à l'un des plus petits pays d'Europe."
+      },
+      {
+        "id": "cg-lumiere",
+        "categorie": "culture",
+        "type": "qcm",
+        "texte": "Combien de temps met la lumière du Soleil pour arriver jusqu'à nous ?",
+        "options": [
+          { "id": "a", "label": "Environ 8 minutes" },
+          { "id": "b", "label": "Instantanément" },
+          { "id": "c", "label": "Environ 3 heures" },
+          { "id": "d", "label": "Environ 40 secondes" }
+        ],
+        "reponse": "a",
+        "explication": "8 minutes et des poussières. Le soleil que tu regardes, c'est déjà du passé."
+      },
+
+      {
+        "id": "lg-batte",
+        "categorie": "logique",
+        "type": "qcm",
+        "texte": "Une raquette et une balle coûtent 1,10 € à elles deux. La raquette coûte 1 € de plus que la balle. Combien coûte la balle ?",
+        "options": [
+          { "id": "a", "label": "0,05 €" },
+          { "id": "b", "label": "0,10 €" },
+          { "id": "c", "label": "1 €" },
+          { "id": "d", "label": "0,55 €" }
+        ],
+        "reponse": "a",
+        "explication": "5 centimes. À 10 centimes, la raquette ferait 1,10 € et le total 1,20 €. Presque tout le monde répond 10 sans réfléchir."
+      },
+      {
+        "id": "lg-machines",
+        "categorie": "logique",
+        "type": "qcm",
+        "texte": "5 machines mettent 5 minutes à fabriquer 5 objets. Combien de temps mettent 100 machines pour fabriquer 100 objets ?",
+        "options": [
+          { "id": "a", "label": "5 minutes" },
+          { "id": "b", "label": "100 minutes" },
+          { "id": "c", "label": "20 minutes" },
+          { "id": "d", "label": "1 minute" }
+        ],
+        "reponse": "a",
+        "explication": "5 minutes. Chaque machine met 5 minutes par objet, qu'il y en ait 5 ou 100 qui tournent en même temps."
+      },
+      {
+        "id": "lg-nenuphars",
+        "categorie": "logique",
+        "type": "qcm",
+        "texte": "Des nénuphars doublent de surface chaque jour et couvrent tout le lac en 48 jours. En combien de jours en couvrent-ils la moitié ?",
+        "options": [
+          { "id": "a", "label": "47 jours" },
+          { "id": "b", "label": "24 jours" },
+          { "id": "c", "label": "46 jours" },
+          { "id": "d", "label": "12 jours" }
+        ],
+        "reponse": "a",
+        "explication": "47. Puisque ça double, la veille du lac plein, il en restait exactement la moitié."
+      },
+      {
+        "id": "lg-deuxieme",
+        "categorie": "logique",
+        "type": "qcm",
+        "texte": "Tu es dans une course et tu doubles le deuxième. Tu es à quelle place ?",
+        "options": [
+          { "id": "a", "label": "Deuxième" },
+          { "id": "b", "label": "Premier" },
+          { "id": "c", "label": "Troisième" },
+          { "id": "d", "label": "Impossible à dire" }
+        ],
+        "reponse": "a",
+        "explication": "Deuxième : tu prends sa place, pas celle du premier. Tout le monde répond « premier ». Tout le monde a tort."
+      },
+      {
+        "id": "lg-moutons",
+        "categorie": "logique",
+        "type": "qcm",
+        "texte": "Un berger a 17 moutons. Tous meurent sauf 9. Combien lui en reste-t-il ?",
+        "options": [
+          { "id": "a", "label": "9" },
+          { "id": "b", "label": "8" },
+          { "id": "c", "label": "17" },
+          { "id": "d", "label": "0" }
+        ],
+        "reponse": "a",
+        "explication": "9. « Tous sauf 9 » veut dire que 9 sont vivants. La soustraction, c'est le piège."
+      },
+      {
+        "id": "lg-survivants",
+        "categorie": "logique",
+        "type": "qcm",
+        "texte": "Un avion s'écrase pile sur la frontière entre la France et l'Espagne. Où enterre-t-on les survivants ?",
+        "options": [
+          { "id": "a", "label": "Nulle part, ils sont vivants" },
+          { "id": "b", "label": "En France" },
+          { "id": "c", "label": "En Espagne" },
+          { "id": "d", "label": "Dans leur pays d'origine" }
+        ],
+        "reponse": "a",
+        "explication": "On n'enterre pas les survivants. C'est le genre de question qu'on relit deux fois."
+      },
+      {
+        "id": "lg-peche",
+        "categorie": "logique",
+        "type": "qcm",
+        "texte": "Deux pères et deux fils vont à la pêche. Ils ramènent trois poissons, et chacun en rapporte un chez lui. Comment ?",
+        "options": [
+          { "id": "a", "label": "Ils ne sont que trois : grand-père, père et fils" },
+          { "id": "b", "label": "L'un d'eux a triché" },
+          { "id": "c", "label": "Un poisson a été partagé en deux" },
+          { "id": "d", "label": "Deux d'entre eux habitent ensemble" }
+        ],
+        "reponse": "a",
+        "explication": "Trois personnes. Celui du milieu est à la fois un père et un fils — il compte deux fois."
+      },
+      {
+        "id": "lg-brique",
+        "categorie": "logique",
+        "type": "qcm",
+        "texte": "Une brique pèse un kilo plus une demi-brique. Combien pèse la brique ?",
+        "options": [
+          { "id": "a", "label": "2 kg" },
+          { "id": "b", "label": "1,5 kg" },
+          { "id": "c", "label": "1 kg" },
+          { "id": "d", "label": "3 kg" }
+        ],
+        "reponse": "a",
+        "explication": "2 kg. La demi-brique pèse donc 1 kg, et 1 + 1 = 2. Tout est cohérent."
+      },
+      {
+        "id": "lg-escargot",
+        "categorie": "logique",
+        "type": "qcm",
+        "texte": "Un escargot est au fond d'un puits de 10 m. Chaque jour il monte de 3 m, chaque nuit il redescend de 2 m. En combien de jours sort-il ?",
+        "options": [
+          { "id": "a", "label": "8 jours" },
+          { "id": "b", "label": "10 jours" },
+          { "id": "c", "label": "9 jours" },
+          { "id": "d", "label": "30 jours" }
+        ],
+        "reponse": "a",
+        "explication": "8. Il gagne 1 m par cycle, donc 7 m après 7 jours — et le 8e jour, ses 3 m le font sortir avant la nuit."
+      },
+      {
+        "id": "lg-allumette",
+        "categorie": "logique",
+        "type": "qcm",
+        "texte": "Tu entres dans une pièce sombre avec une seule allumette. Il y a une lampe à pétrole, une bougie et un poêle. Qu'allumes-tu en premier ?",
+        "options": [
+          { "id": "a", "label": "L'allumette" },
+          { "id": "b", "label": "La bougie" },
+          { "id": "c", "label": "La lampe à pétrole" },
+          { "id": "d", "label": "Le poêle" }
+        ],
+        "reponse": "a",
+        "explication": "L'allumette. Difficile d'allumer quoi que ce soit d'autre avant."
+      },
+      {
+        "id": "lg-train",
+        "categorie": "logique",
+        "type": "qcm",
+        "texte": "Un train électrique file vers le nord à 120 km/h. Le vent souffle vers le sud. Dans quel sens part la fumée ?",
+        "options": [
+          { "id": "a", "label": "Il n'y a pas de fumée, il est électrique" },
+          { "id": "b", "label": "Vers le sud, comme le vent" },
+          { "id": "c", "label": "Vers le nord, comme le train" },
+          { "id": "d", "label": "Elle monte tout droit" }
+        ],
+        "reponse": "a",
+        "explication": "Aucune fumée. On t'a donné deux chiffres pour t'occuper pendant qu'on te piquait le mot « électrique »."
+      },
+      {
+        "id": "lg-mois",
+        "categorie": "logique",
+        "type": "qcm",
+        "texte": "Combien de mois de l'année comptent 28 jours ?",
+        "options": [
+          { "id": "a", "label": "Les 12" },
+          { "id": "b", "label": "Un seul" },
+          { "id": "c", "label": "Quatre" },
+          { "id": "d", "label": "Aucun, sauf les années bissextiles" }
+        ],
+        "reponse": "a",
+        "explication": "Tous. La question ne dit pas « exactement 28 » — et tous les mois passent par le 28."
       }
     ]
   }

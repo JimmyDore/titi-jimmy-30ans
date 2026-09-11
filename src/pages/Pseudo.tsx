@@ -2,11 +2,17 @@ import FormulairePseudo from '../components/FormulairePseudo'
 import { naviguer } from '../routeur'
 import type { Joueur } from '../storage'
 
+const TEXTES: Record<string, { intro: string; bouton: string }> = {
+  '/roue': { intro: 'Un pseudo et tu enchaînes sur la roue.', bouton: "C'est parti pour la roue" },
+  '/quizz': { intro: 'Un pseudo et tu enchaînes sur le quizz.', bouton: "C'est parti pour le quizz" },
+  '/scores': { intro: 'Un pseudo et tu rentres ton score.', bouton: 'Rentrer mon score' },
+}
+
 export default function Pseudo({ destination, surCreation }: {
   destination: string
   surCreation: (joueur: Joueur) => void
 }) {
-  const jeu = destination === '/roue' ? 'la roue' : 'le quizz'
+  const textes = TEXTES[destination] ?? TEXTES['/quizz']
   return (
     <div className="ecran">
       <h1 className="enseigne shrink-0 pt-1 text-center text-[2.7rem]">Titi &amp; Djimi</h1>
@@ -23,11 +29,9 @@ export default function Pseudo({ destination, surCreation }: {
       </div>
 
       <div className="carte shrink-0 p-4">
-        <p className="mb-3 text-center text-creme/80">
-          Un pseudo et tu enchaînes sur {jeu}.
-        </p>
+        <p className="mb-3 text-center text-creme/80">{textes.intro}</p>
         <FormulairePseudo
-          libelle={`C'est parti pour ${jeu}`}
+          libelle={textes.bouton}
           surCreation={(joueur) => { surCreation(joueur); naviguer(destination) }}
         />
       </div>

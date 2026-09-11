@@ -3,15 +3,16 @@ import qrcode from 'qrcode-generator'
 const BASE = 'https://30anstitietjimmy.jimmydore.fr'
 
 /**
- * Deux feuilles A4, une par jeu, plus une pour l'accueil. À imprimer depuis le
- * navigateur (Cmd+P) : les couleurs de fond sont volontairement absentes pour
- * ne pas vider une cartouche d'encre.
+ * Une feuille A4 par jeu, une pour les scores (à scotcher près du palet ou de
+ * la table de beer pong), une pour l'accueil. À imprimer depuis le navigateur
+ * (Cmd+P) : les couleurs de fond sont volontairement absentes pour ne pas
+ * vider une cartouche d'encre.
  */
 export default function Impression() {
   return (
     <div className="bg-white text-black">
       <p className="sans-impression p-6 text-center text-sm text-gray-600">
-        Cmd+P → « Imprimer » → format A4. Trois pages : la roue, le quizz, l'accueil.
+        Cmd+P → « Imprimer » → format A4. Quatre pages : la roue, le quizz, les scores, l'accueil.
       </p>
       <Feuille
         emoji="🎡"
@@ -26,17 +27,27 @@ export default function Impression() {
         url={`${BASE}/quizz`}
       />
       <Feuille
+        emoji="🎯"
+        titre="Rentre ton score"
+        soustitre="Palet, Mölkky, beer pong… Gagné ou perdu, ça reste gravé."
+        url={`${BASE}/scores`}
+        pied="Scanne à la fin de chaque partie : le jeu, les noms, qui a gagné. Le classement suit tout seul."
+      />
+      <Feuille
         emoji="🎉"
         titre="Les 30 ans de Titi & Djimi"
-        soustitre="Les deux jeux, les classements, tout est là."
+        soustitre="Les jeux, les scores, les classements : tout est là."
         url={BASE}
       />
     </div>
   )
 }
 
-function Feuille({ emoji, titre, soustitre, url }: {
-  emoji: string; titre: string; soustitre: string; url: string
+function Feuille({
+  emoji, titre, soustitre, url,
+  pied = 'Scanne, mets ton pseudo, joue. Ton pseudo reste sur ton téléphone : tu peux revenir quand tu veux.',
+}: {
+  emoji: string; titre: string; soustitre: string; url: string; pied?: string
 }) {
   return (
     <section
@@ -51,9 +62,7 @@ function Feuille({ emoji, titre, soustitre, url }: {
           à zéro et la feuille part à l'imprimante sans son QR code. */}
       <div style={{ width: '260px', height: '260px' }} dangerouslySetInnerHTML={{ __html: svgQr(url) }} />
       <p className="text-lg font-mono text-gray-600">{url.replace('https://', '')}</p>
-      <p className="max-w-md text-gray-600">
-        Scanne, mets ton pseudo, joue. Ton pseudo reste sur ton téléphone : tu peux revenir quand tu veux.
-      </p>
+      <p className="max-w-md text-gray-600">{pied}</p>
     </section>
   )
 }
