@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import test from 'node:test';
+import test, { after } from 'node:test';
 
 import { chargerContenu } from '../content.mjs';
 import { ouvrirDb } from '../db.mjs';
@@ -7,6 +7,16 @@ import { creerApp } from '../index.mjs';
 import { hachage, scorer, tailleQuizz, tirerOrdre, tirerSegment } from '../quizz.mjs';
 
 const contenu = chargerContenu();
+
+/**
+ * Les serveurs ouverts par les tests, fermés quoi qu'il arrive à la fin du
+ * fichier. Sans ce filet, une assertion qui casse saute le `fermer()` de fin
+ * de test : le serveur HTTP reste à l'écoute, la boucle d'événements ne se
+ * vide jamais et `node --test` ne rend plus la main. Un test rouge doit être
+ * rouge en deux secondes, pas faire tourner la CI jusqu'à son délai maximum.
+ */
+const ouverts = [];
+after(async () => { await Promise.all(ouverts.map((fermer) => fermer())); });
 
 /** Un serveur éphémère par test : aucune base partagée, donc aucun ordre imposé. */
 async function demarrer(deps = {}) {
@@ -22,7 +32,9 @@ async function demarrer(deps = {}) {
     });
     return { code: res.status, corps: await res.json().catch(() => null) };
   };
-  return { db, appel, fermer: () => new Promise((ok) => app.close(ok)) };
+  const fermer = () => new Promise((ok) => app.close(ok));
+  ouverts.push(fermer);
+  return { db, appel, fermer };
 }
 
 const auth = (token) => ({ Authorization: `Bearer ${token}` });
@@ -46,14 +58,24 @@ test('le quizz ne se joue qu’une fois et le score est recalculé côté serveu
   // Les bonnes réponses ne partent jamais au navigateur, seulement leur hash.
   assert.equal(JSON.stringify(etat.questions).includes('"reponse"'), false);
 
-  const bonnes = new Map(contenu.quizz.questions.map((q) => [q.id, q.reponse]));
+  // Le score parfait n'est pas la taille du quizz : une question « piège »
+  // n'a aucune bonne réponse, donc elle ne rapporte rien à personne. Et comme
+  // les questions sont tirées au sort, le nombre de pièges varie d'un joueur
+  // à l'autre — on compte donc sur le tirage réel, sinon le test passe ou
+  // casse selon la chance.
+  const source = new Map(contenu.quizz.questions.map((q) => [q.id, q]));
+  let parfait = 0;
   for (const q of etat.questions) {
-    await appel('/api/quizz/reponses', {
-      method: 'POST', headers: auth(joueur.token), corps: { questionId: q.id, optionId: bonnes.get(q.id) },
+    const originale = source.get(q.id);
+    const choix = originale.piege ? q.options[0].id : originale.reponse;
+    if (!originale.piege) parfait++;
+    const { code } = await appel('/api/quizz/reponses', {
+      method: 'POST', headers: auth(joueur.token), corps: { questionId: q.id, optionId: choix },
     });
+    assert.equal(code, 200, `la réponse à ${q.id} a été refusée`);
   }
   const { corps: fin } = await appel('/api/quizz/fin', { method: 'POST', headers: auth(joueur.token) });
-  assert.equal(fin.score, tailleQuizz(contenu));
+  assert.equal(fin.score, parfait);
 
   const encore = await appel('/api/quizz/reponses', {
     method: 'POST', headers: auth(joueur.token), corps: { questionId: etat.questions[0].id, optionId: 'titi' },
@@ -75,6 +97,29 @@ test('un quizz interrompu reprend avec les réponses déjà données', async () 
   // L'ordre est figé en base : sans ça, la reprise afficherait un autre questionnaire.
   assert.equal(apres.questions[0].id, premiere.id);
   await fermer();
+});
+
+test('une question piège ne peut être gagnée par personne', async () => {
+  // Le tirage ne garantit pas qu'un piège sorte, donc on interroge la question
+  // directement : sinon ce comportement ne serait vérifié qu'une fois sur
+  // trois, et une régression passerait en vert la plupart du temps.
+  const pieges = contenu.quizz.questions.filter((q) => q.piege);
+  assert.ok(pieges.length > 0, 'le contenu ne contient plus aucune question piège');
+
+  const { appel } = await demarrer();
+  const { corps: joueur } = await appel('/api/joueurs', { method: 'POST', corps: { pseudo: 'Piégé' } });
+  for (const piege of pieges) {
+    for (const option of piege.options) {
+      const { code, corps } = await appel('/api/quizz/reponses', {
+        method: 'POST', headers: auth(joueur.token), corps: { questionId: piege.id, optionId: option.id },
+      });
+      assert.equal(code, 200);
+      assert.equal(corps.juste, false, `${piege.id} : l'option « ${option.id} » ne doit pas être gagnante`);
+    }
+    // Et le score du classement, recalculé côté serveur, ne la compte jamais.
+    const commeSiToutesCochees = piege.options.map((o) => ({ question_id: piege.id, option_id: o.id }));
+    assert.equal(scorer(contenu, commeSiToutesCochees), 0);
+  }
 });
 
 test('chaque joueur a son propre tirage, mais la même répartition par catégorie', async () => {

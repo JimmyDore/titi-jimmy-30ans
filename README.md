@@ -80,11 +80,6 @@ option.
 sujets et « Les deux ») — c'est purement décoratif, le fonctionnement est
 identique. Rien n'impose quatre propositions : trois marchent très bien.
 
-`chapeau` est facultatif : c'est la petite étiquette dorée au-dessus de
-l'énoncé. Réserve-la aux questions dont la règle du jeu ne va pas de soi
-(« Sel ou poivre », « Les nuggets ») — une question normale n'en a pas besoin.
-Garde-le court, il est en capitales espacées.
-
 **Une question « sel ou poivre » :** le duo est porté par les propositions, pas
 par l'énoncé — celui-ci n'est qu'une affirmation à ranger d'un côté ou de
 l'autre, et la troisième option est toujours « Les deux ».
@@ -94,7 +89,6 @@ l'autre, et la troisième option est toujours « Les deux ».
   "id": "bq-sp-exemple",
   "categorie": "burger",
   "type": "selpoivre",
-  "chapeau": "Sel ou poivre",
   "texte": "« Fait ses tournées sur une broche »",
   "options": [
     { "id": "sel", "label": "Pavarotti" },

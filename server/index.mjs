@@ -232,7 +232,6 @@ function etatQuizz(db, contenu, sel, joueur) {
       return {
         id: q.id,
         type: q.type,
-        chapeau: q.chapeau ?? null,
         texte: q.texte,
         options: o.options.filter((id) => optionsParId.has(id)).map((id) => ({ id, label: optionsParId.get(id).label })),
         verif: hachage(q.id, q.reponse, sel),

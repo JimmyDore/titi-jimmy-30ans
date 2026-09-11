@@ -37,7 +37,6 @@ async function appeler<T>(chemin: string, options: RequestInit & { corps?: unkno
 export type Question = {
   id: string;
   type: 'duo' | 'qcm' | 'selpoivre';
-  chapeau: string | null;
   texte: string;
   options: { id: string; label: string }[];
   verif: string;
